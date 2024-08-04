@@ -1,0 +1,120 @@
+/*
+Link: https://codeforces.com/contest/896/problem/D
+*/
+
+#include <vector>
+#include <cstdio>
+#include <stdexcept>
+#include <cassert>
+
+long long PowerMod(long long base, long long exponent, long long modulus) {
+    long long result = 1;
+    while (exponent > 0) {
+        if (exponent % 2 == 1) {
+            result = (result * base) % modulus;
+        }
+        base = (base * base) % modulus;
+        exponent /= 2;
+    }
+    return result;
+}
+
+long long Combination(int x_val, int y_val, const std::vector<long long>& factorials, const std::vector<long long>& inverses, const std::vector<int>& primes, const std::vector<std::vector<int>>& counts, int prime_count, long long modulus) {
+    if (x_val < 0 || y_val < 0 || x_val < y_val) {
+        return 0;
+    }
+    long long result = factorials[x_val] * inverses[y_val] % modulus * inverses[x_val - y_val] % modulus;
+    for (int i = 0; i < prime_count; ++i) {
+        result = result * PowerMod(primes[i], counts[x_val][i] - counts[y_val][i] - counts[x_val - y_val][i], modulus) % modulus;
+    }
+    return result;
+}
+
+void PrepareFactorials(int num, long long modulus, std::vector<long long>& factorials, std::vector<long long>& inverses, std::vector<int>& primes, std::vector<std::vector<int>>& counts, int& prime_count) {
+   
+   factorials[0] = inverses[0] = 1;
+    long long p_value = modulus, phi_value = modulus;
+
+    for (int i = 2; i * i <= p_value; ++i) {
+        if (p_value % i == 0) {
+            primes[prime_count++] = i;
+            phi_value = phi_value / i * (i - 1);
+            while (p_value % i == 0) {
+                p_value /= i;
+            }
+        }
+    }
+    if (p_value != 1) {
+        primes[prime_count++] = p_value;
+        phi_value = phi_value / p_value * (p_value - 1);
+    }
+
+    for (int i = 1; i <= num + 1; ++i) {
+        int k_value = i;
+        for (int j = 0; j < prime_count; ++j) {
+            counts[i][j] = counts[i - 1][j];
+            while (k_value % primes[j] == 0) {
+                counts[i][j]++;
+                k_value /= primes[j];
+            }
+        }
+        factorials[i] = factorials[i - 1] * k_value % modulus;
+    }
+
+    for (int i = 1; i <= num + 1; ++i) {
+        inverses[i] = PowerMod(factorials[i], phi_value - 1, modulus);
+    }
+}
+
+long long ComputeAnswer(long long num, long long modulus, long long left, long long right) {
+    
+   if (num < 1 || num > 100000 ) {
+        throw std::invalid_argument("Invalid value of num");
+    }
+  
+     if (modulus < 1 || modulus > 2000000000) {
+        throw std::invalid_argument("Invalid value of modulus");
+    }
+  
+  
+     if (left < 0 || left > right || right > num) {
+        throw std::invalid_argument("Invalid value of left and right");
+    }
+  
+    std::vector<long long> factorials(num + 2), inverses(num + 2);
+    std::vector<int> primes(30);
+    std::vector<std::vector<int>> counts(num + 2, std::vector<int>(30, 0));
+    int prime_count = 0;
+
+    PrepareFactorials(num, modulus, factorials, inverses, primes, counts, prime_count);
+
+    long long answer = 0;
+    for (int i = 0; i <= num; ++i) {
+        long long left_value = std::max(left, 0LL);
+        long long right_value = std::min(static_cast<long long>(i), right);
+        long long temp_value = Combination(num, i, factorials, inverses, primes, counts, prime_count, modulus);
+        (answer -= temp_value * Combination(num - i + 1, i - right_value - 1, factorials, inverses, primes, counts, prime_count, modulus) % modulus) %= modulus;
+        (answer += temp_value * Combination(num - i + 1, i - left_value, factorials, inverses, primes, counts, prime_count, modulus) % modulus) %= modulus;
+    }
+    return (answer + modulus) % modulus;
+}
+
+
+#include <vector>
+#include <cstdio>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+  
+  long long n;
+    long long M, L, R;
+    std::scanf("%lld %lld %lld %lld", &n, &M, &L, &R);
+
+    long long result = ComputeAnswer(n, M, L, R);
+
+    std::printf("%lld\n", result);
+    return 0;
+}
+
+
