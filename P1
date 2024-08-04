@@ -1,0 +1,79 @@
+/*
+Link : https://codeforces.com/problemset/problem/1421/E
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+
+long long solve_problem(std::vector<long long>& hero_powers) {
+  
+    std::size_t num_heroes = hero_powers.size();
+    if (num_heroes < 1 || num_heroes > 200000) {
+        throw std::invalid_argument("Invalid number of elements in input");
+    }
+
+    for (const long long& power : hero_powers) {
+        if (power < -1000000000 || power > 1000000000) {
+            throw std::invalid_argument("Power out of valid range");
+        }
+    }
+    long long even_sum = 0, odd_sum = 0, total_sum = 0;
+    long long max_result = -1000000000000000000LL;
+
+    for (std::size_t i = 0; i < num_heroes; ++i) {
+        total_sum += hero_powers[i];
+        if (i % 2 == 0) {
+            even_sum += hero_powers[i];
+        } else {
+            odd_sum += hero_powers[i];
+        }
+    }
+
+    std::vector<long long> sorted_powers = hero_powers;
+    std::sort(sorted_powers.begin(), sorted_powers.end());
+
+    if (num_heroes % 3 == 1) {
+        max_result = total_sum;
+    }
+
+    for (std::size_t i = 0; i < num_heroes; ++i) {
+        total_sum -= 2 * sorted_powers[i];
+        if ((num_heroes + i) % 3 == 0) {
+            if (total_sum == even_sum - odd_sum || total_sum == odd_sum - even_sum) {
+                max_result = std::max(max_result, total_sum + 2 * (sorted_powers[i] - sorted_powers[i + 1]));
+            } else {
+                max_result = std::max(max_result, total_sum);
+            }
+        }
+    }
+
+    return max_result;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int num_heroes;
+    std::cin >> num_heroes;
+
+    std::vector<long long> hero_powers(num_heroes);
+    for (int i = 0; i < num_heroes; ++i) {
+        std::cin >> hero_powers[i];
+    }
+ 
+    long long result = solve_problem(hero_powers);
+    std::cout << result;
+
+    return 0;
+}
