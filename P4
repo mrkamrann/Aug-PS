@@ -17,7 +17,7 @@ long long Solve(std::vector<long long>& elements) {
     }
     
     for (const long long& element : elements) {
-        if (element < 1 || element > 1013) {
+        if (element < 1 || element > 1e13) {
             throw std::invalid_argument("Element out of bounds");
         }
     }
@@ -63,7 +63,7 @@ int main() {
     std::vector<long long> elements(length);
     for (long long i = 0; i < length; ++i) {
         std::cin >> elements[i];
-        if (elements[i] < 1 || elements[i] > 1013) {
+        if (elements[i] < 1 || elements[i] > 1e13) {
             throw std::invalid_argument("Element out of bounds");
         }
     }
@@ -73,5 +73,4 @@ int main() {
     return 0;
 }
 
-// TEST
-// TEST_END
+
