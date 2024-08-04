@@ -1,79 +1,74 @@
 /*
-Link : https://codeforces.com/problemset/problem/1421/E
+Link : https://codeforces.com/contest/1398/problem/F
 */
 
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <stdexcept>
 #include <cassert>
 
 
-long long solve_problem(std::vector<long long>& hero_powers) {
+std::vector<int> CountSubstrings(const std::string& str) {
   
-    std::size_t num_heroes = hero_powers.size();
-    if (num_heroes < 1 || num_heroes > 200000) {
-        throw std::invalid_argument("Invalid number of elements in input");
+    int length = str.size();
+  
+    if (length < 1 || length > 1e6) {
+        throw std::invalid_argument("Invalid input: length of str is out of bounds");
+    }
+  
+
+    std::vector<std::vector<int>> count(length + 1, std::vector<int>(2, 0));
+    for (int i = 0; i < length; i++) {
+        
+         if(str[i] != '0' && str[i] != '1' && str[i] != '?')
+         {
+           throw std::invalid_argument("Invalid string: str should contain only 0, 1 and ?");
+         }
+        count[i + 1][0] = count[i][0];
+        count[i + 1][1] = count[i][1];
+        if (str[i] == '?') continue;
+        count[i + 1][(str[i] & 1) ^ 1] = i + 1;
     }
 
-    for (const long long& power : hero_powers) {
-        if (power < -1000000000 || power > 1000000000) {
-            throw std::invalid_argument("Power out of valid range");
-        }
-    }
-    long long even_sum = 0, odd_sum = 0, total_sum = 0;
-    long long max_result = -1000000000000000000LL;
-
-    for (std::size_t i = 0; i < num_heroes; ++i) {
-        total_sum += hero_powers[i];
-        if (i % 2 == 0) {
-            even_sum += hero_powers[i];
-        } else {
-            odd_sum += hero_powers[i];
-        }
-    }
-
-    std::vector<long long> sorted_powers = hero_powers;
-    std::sort(sorted_powers.begin(), sorted_powers.end());
-
-    if (num_heroes % 3 == 1) {
-        max_result = total_sum;
-    }
-
-    for (std::size_t i = 0; i < num_heroes; ++i) {
-        total_sum -= 2 * sorted_powers[i];
-        if ((num_heroes + i) % 3 == 0) {
-            if (total_sum == even_sum - odd_sum || total_sum == odd_sum - even_sum) {
-                max_result = std::max(max_result, total_sum + 2 * (sorted_powers[i] - sorted_powers[i + 1]));
+    std::vector<int> ans;
+  
+    for (int i = 1; i <= length; i++) {
+        int total = 0;
+        int result = 0;
+        while (total + i <= length) {
+            if (count[total + i][0] == count[total][0] || count[total + i][1] == count[total][1]) {
+                total += i;
+                result++;
             } else {
-                max_result = std::max(max_result, total_sum);
+                total = count[total + i][count[total + i][1] < count[total + i][0]];
             }
         }
+         
+        ans.push_back(result);
     }
-
-    return max_result;
+  return ans;
 }
+
 
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <stdexcept>
 #include <cassert>
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+    std::ios::sync_with_stdio(0);
+    std::cin.tie(0);
+    std::cout.tie(0);
 
-    int num_heroes;
-    std::cin >> num_heroes;
+    int length;
+    std::string input_string;
 
-    std::vector<long long> hero_powers(num_heroes);
-    for (int i = 0; i < num_heroes; ++i) {
-        std::cin >> hero_powers[i];
-    }
- 
-    long long result = solve_problem(hero_powers);
-    std::cout << result;
+    std::cin >> length;
+    std::cin >> input_string;
+
+    std::vector<int> result = CountSubstrings(input_string);
+    for(auto it : result) std::cout<<it<<" ";
+  
 
     return 0;
 }
