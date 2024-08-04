@@ -1,0 +1,77 @@
+/*
+Link: https://codeforces.com/contest/889/problem/E
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+long long Solve(std::vector<long long>& elements) {
+  
+   long long length = elements.size();
+  
+    if (length < 1 || length > 200000) {
+        throw std::invalid_argument("Length out of bounds");
+    }
+    
+    for (const long long& element : elements) {
+        if (element < 1 || element > 1013) {
+            throw std::invalid_argument("Element out of bounds");
+        }
+    }
+    
+    std::vector<long long> min_elements(length + 1);
+    std::vector<long long> max_values(length + 1, 0);
+    
+    for (long long i = length; i >= 1; --i) {
+        min_elements[i] = elements[length - i];
+    }
+    min_elements[0] = 1;
+    
+    for (long long i = length - 1; i >= 1; --i) {
+        min_elements[i] = std::min(min_elements[i], min_elements[i + 1]);
+    }
+    
+    for (long long i = 1; i <= length; ++i) {
+        long long current_sum = 0;
+        long long sum_increments = 0;
+        
+        for (long long j = min_elements[i]; j >= 1; j %= min_elements[current_sum]) {
+            current_sum = std::lower_bound(min_elements.begin() + 1, min_elements.begin() + length + 1, j) - min_elements.begin() - 1;
+            max_values[i] = std::max(max_values[i], max_values[current_sum] + (length - current_sum) * (j - j % min_elements[current_sum] - min_elements[current_sum]) + sum_increments);
+            sum_increments += (length - current_sum) * (j - j % min_elements[current_sum]);
+        }
+    }
+    return max_values[length];
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    long long length;
+    std::cin >> length;
+    if (length < 1 || length > 200000) {
+        throw std::invalid_argument("Length out of bounds");
+    }
+    
+    std::vector<long long> elements(length);
+    for (long long i = 0; i < length; ++i) {
+        std::cin >> elements[i];
+        if (elements[i] < 1 || elements[i] > 1013) {
+            throw std::invalid_argument("Element out of bounds");
+        }
+    }
+
+    std::cout << Solve(elements) << std::endl;
+
+    return 0;
+}
+
+// TEST
+// TEST_END
