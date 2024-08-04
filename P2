@@ -1,0 +1,82 @@
+/*
+Link: https://codeforces.com/contest/1687/problem/D
+*/
+
+#include <vector>
+#include <cstdio>
+#include <stdexcept>
+#include <algorithm>
+
+long long FindTwinClusters(std::vector<long long>& values) {
+  
+    int len = values.size();
+
+    if (len < 1 || len > 1000000) {
+        throw std::invalid_argument("len out of bounds");
+    }
+    
+    for (int i = 0; i < len; ++i) {
+        if (values[i] < 1 || values[i] > 2000000) {
+            throw std::invalid_argument("values element out of bounds");
+        }
+        if (i > 0 && values[i] < values[i - 1]) {
+            throw std::invalid_argument("values not sorted");
+        }
+    }
+
+    long long const max_n = 2000001;
+  
+    std::vector<long long> head(len + 10), tail(len + 10);
+    std::vector<std::vector<long long>> merge(max_n);
+
+    for (int i = 0; i < len; ++i) {
+        head[i] = i - 1;
+        tail[i] = i + 1;
+    }
+    
+    for (int i = 1; i < len; ++i) {
+        merge[values[i] - values[i - 1]].push_back(i);
+    }
+    
+    for (long long i = 0;; ++i) {
+        for (long long j : merge[i]) {
+            tail[head[j]] = tail[j];
+            head[tail[j]] = head[j];
+        }
+        
+        long long s_val = i * i - values[0], x_val = 0, y_val = s_val + i, j_val = i;
+        for (long long l = 0; l < len; l = tail[l]) {
+            while (j_val * (j_val + 1) < values[l] + s_val) {
+                ++j_val;
+            }
+            x_val = std::max(x_val, j_val * j_val - values[l]);
+            y_val = std::min(y_val, j_val * (j_val + 1) - values[tail[l] - 1]);
+        }
+        
+        if (x_val <= y_val) {
+            return {x_val};
+        }
+    }
+}
+
+#include <vector>
+#include <cstdio>
+#include <stdexcept>
+#include <algorithm>
+
+int main() {
+  
+    int len;
+    std::scanf("%lld", &len);
+    std::vector<long long> values(len);
+    for (int i = 0; i < len; ++i) {
+        std::scanf("%lld", &values[i]);
+    }
+    
+    long long result = FindTwinClusters(values);
+   
+        std::printf("%lld\n", result);
+    
+    
+    return 0;
+}
