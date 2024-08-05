@@ -1,0 +1,95 @@
+/*
+Link: https://codeforces.com/problemset/problem/338/D
+*/
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+void ExtendedGcd(long long first_value, long long second_value, long long &x_value, long long &y_value) {
+    if (!second_value) {
+        x_value = 1;
+        y_value = 0;
+        return;
+    }
+    ExtendedGcd(second_value, first_value % second_value, y_value, x_value);
+    y_value -= (first_value / second_value) * x_value;
+}
+
+bool IsValidConfiguration(const std::vector<long long>& arr, long long max_elements, long long max_value) {
+    long long arr_len = arr.size();
+  
+    if (max_elements < 1 || max_elements > 1000000000000LL) {
+        throw std::invalid_argument("num_elements must be at least 1 and at max 1e12");
+    }
+    if (max_value < 1 || max_value > 1000000000000LL) {
+        throw std::invalid_argument("max_value must be at least 1 and at max 1e12");
+    }
+    if (arr_len < 1 || arr_len > 10000) {
+        throw std::invalid_argument("arr_len must be between 1 and 10000");
+    }
+  
+    for (int i = 0; i < arr_len; ++i) {
+        if (arr[i] < 1 || arr[i] > 1000000000000LL) {
+            throw std::invalid_argument("Array elements must be between 1 and 1000000000000");
+        }
+    }
+
+    long long left_bound = arr[0];
+    long long right_bound = 0;
+
+    for (int i = 1; i < arr_len; ++i) {
+        long long gcd_value = std::gcd(left_bound, arr[i]);
+        if (1.0 * left_bound / gcd_value * arr[i] > 1e13 || left_bound / gcd_value * arr[i] > max_elements || (-i - right_bound) % gcd_value) {
+            return false;
+        }
+        long long p_value, q_value, multiple = left_bound / gcd_value * arr[i];
+        ExtendedGcd(left_bound / gcd_value, arr[i] / gcd_value, p_value, q_value);
+        right_bound = (right_bound + (long long)((__int128)p_value * (-i - right_bound) / gcd_value % multiple * left_bound % multiple) + multiple) % multiple;
+        left_bound = multiple;
+    }
+
+    if (!right_bound) {
+        right_bound = left_bound;
+    }
+
+    if (left_bound > max_elements || right_bound + arr_len - 1 > max_value) {
+        return false;
+    }
+
+    for (int i = 0; i < arr_len; ++i) {
+        if (std::gcd(left_bound, right_bound + i) != arr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+int main() {
+    long long num_elements, max_value;
+    int arr_len;
+    std::cin >> num_elements >> max_value >> arr_len;
+
+    std::vector<long long> arr(arr_len);
+    for (int i = 0; i < arr_len; ++i) {
+        std::cin >> arr[i];
+    }
+
+    bool result = IsValidConfiguration(arr, num_elements, max_value);
+    if (result) {
+        std::cout << "YES";
+    } else {
+        std::cout << "NO";
+    }
+
+    return 0;
+}
