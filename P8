@@ -1,0 +1,95 @@
+/*
+Link: https://codeforces.com/contest/1034/problem/C
+REDUCE CONSTRAINTS!!!!
+*/
+
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+const int modulus = 1e9 + 7;
+
+int CalculateResults(std::vector<long long>& city_values, std::vector<int>& roads) {
+    if (city_values.size() < 1 || city_values.size() > 1e6) {
+        throw std::invalid_argument("Invalid number of cities");
+    }
+    if (roads.size() != city_values.size() - 1) {
+        throw std::invalid_argument("Invalid number of roads");
+    }
+    
+    for (size_t index = 0; index < city_values.size(); ++index) {
+        if (city_values[index] < 1 || city_values[index] > 1e9) {
+            throw std::invalid_argument("City value out of bounds");
+        }
+    }
+    
+    for (size_t index = 0; index < roads.size(); ++index) {
+        if (roads[index] < 1 || roads[index] > index + 1) {
+            throw std::invalid_argument("Invalid road connection");
+        }
+    }
+    
+    int total_cities = city_values.size();
+    int answer = 0;
+    std::vector<int> previous_city_indices(total_cities + 1);
+    std::vector<long long> accumulated_sums(total_cities + 1);
+    std::unordered_map<int, int> frequency_map;
+    std::unordered_map<int, int> answer_map;
+    
+    for (int index = 1; index <= total_cities; index++) {
+        accumulated_sums[index] = city_values[index - 1];
+    }
+    for (int index = 1; index <= total_cities - 1; index++) {
+        previous_city_indices[index] = roads[index - 1];
+    }
+    
+    for (int index = total_cities - 1; index > 0; index--) {
+        accumulated_sums[previous_city_indices[index]] += accumulated_sums[index + 1];
+    }
+    
+    for (int index = 1; index <= total_cities; index++) {
+        long long temp_value = accumulated_sums[1] / std::gcd(accumulated_sums[1], accumulated_sums[index]);
+        if (temp_value <= total_cities) {
+            frequency_map[temp_value]++;
+        }
+    }
+    
+    for (int index = total_cities; index > 0; index--) {
+        for (int multiple_index = 2 * index; multiple_index <= total_cities; multiple_index += index) {
+            frequency_map[multiple_index] += frequency_map[index];
+        }
+    }
+    
+    answer_map[1] = 1;
+    for (int index = 1; index <= total_cities; index++) {
+        if (frequency_map[index] == index) {
+            answer = (answer + answer_map[index]) % modulus;
+            for (int multiple_index = 2 * index; multiple_index <= total_cities; multiple_index += index) {
+                answer_map[multiple_index] = (answer_map[multiple_index] + answer_map[index]) % modulus;
+            }
+        }
+    }
+    
+    return answer;
+}
+
+int main() {
+    int total_cities;
+
+    std::scanf("%d", &total_cities);
+    std::vector<long long> city_values(total_cities);
+    std::vector<int> road_connections(total_cities - 1);
+    
+    for (int index = 0; index < total_cities; index++) {
+        std::scanf("%lld", &city_values[index]);
+    }
+    for (int index = 0; index < total_cities - 1; index++) {
+        std::scanf("%d", &road_connections[index]);
+    }
+
+    std::printf("%d\n", CalculateResults(city_values, road_connections));
+    return 0;
+}
