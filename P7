@@ -1,0 +1,80 @@
+/*
+Link: https://codeforces.com/contest/585/problem/E
+*/
+
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+int CalculateResult(std::vector<int>& nums) {
+  
+    int len = nums.size();
+    int max_n = 500010;
+    int max_x = 10000010;
+    int mod = 1000000007;
+  
+    if (len < 1 || len > max_n) {
+        throw std::invalid_argument("Invalid number of elements");
+    }
+   
+    int max_value = *std::max_element(nums.begin(), nums.end());
+    std::vector<int> counts(max_x, 0);
+    std::vector<int> fx_vec(len + 1, 0);
+    std::vector<int> f_vec(max_x, 0);
+    int result = 0;
+
+    for (int i = 0; i < len; i++) {
+        int element = nums[i];
+        if (element < 0 || element >= max_x) {
+            throw std::invalid_argument("Invalid element in the vector");
+        }
+        max_value = std::max(max_value, element);
+        counts[element]++;
+    }
+
+    fx_vec[0] = 1;
+    for (int i = 1; i <= len; i++) {
+        fx_vec[i] = (fx_vec[i - 1] * 2) % mod;
+    }
+
+    for (int g = max_value; g >= 1; g--) {
+        int count = counts[g];
+        for (int i = g + g; i <= max_value; i += g) {
+            count += counts[i];
+            f_vec[g] = (f_vec[g] - f_vec[i] + mod) % mod;
+        }
+        if (g != 1) {
+            f_vec[g] = (f_vec[g] + 1LL * (fx_vec[count] - 1) * (len - count) % mod) % mod;
+            result = (result + f_vec[g]) % mod;
+        }
+    }
+
+    return result;
+}
+
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    int len;
+    std::scanf("%d", &len);
+
+    std::vector<int> nums(len);
+    for (int i = 0; i < len; i++) {
+        std::scanf("%d", &nums[i]);
+    }
+
+    // TEST
+    std::printf("%d", CalculateResult(nums));
+    // TEST_END
+
+    return 0;
+}
