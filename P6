@@ -1,0 +1,77 @@
+/*
+Link : https://codeforces.com/contest/1285/problem/F
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+long long ComputeLcm(long long a_val, long long b_val) {
+    return a_val * b_val / std::gcd(a_val, b_val);
+}
+
+long long CalculateMaxLcm(std::vector<long long>& vec) {
+  
+    if (vec.size() < 2 || vec.size() > 100000) {
+        throw std::invalid_argument("Invalid vec size");
+    }
+
+    for (const long long& element : vec) {
+        if (element < 1 || element > 100000) {
+            throw std::invalid_argument("Invalid vec element");
+        }
+    }
+    std::sort(vec.begin(), vec.end()); 
+  
+    long long vec_size = vec.size();
+    long long max_1 = vec[vec_size - 1];
+    long long max_2 = vec[vec_size - 2];
+    long long max_3 = 1;
+    long long max_4 = 1;
+    long long result = 0;
+
+    if (vec_size > 2) max_3 = vec[vec_size - 3];
+
+    for (long long i = 0; i < vec_size; i++) {
+        long long temp = vec[i];
+        if (temp % 2 != max_1 % 2) max_4 = std::max(max_4, temp);
+    }
+
+    for (long long i = 0; i < vec_size; i++) {
+        result = std::max(result, ComputeLcm(max_1, vec[i]));
+        result = std::max(result, ComputeLcm(max_2, vec[i]));
+        result = std::max(result, ComputeLcm(max_3, vec[i]));
+        result = std::max(result, ComputeLcm(max_4, vec[i]));
+    }
+
+    return result;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+#include <numeric>
+
+int main() {
+    long long num_elements;
+    std::cin >> num_elements;
+
+ 
+    std::vector<long long> elements(num_elements);
+
+    for (long long i = 0; i < num_elements; i++) {
+        std::cin >> elements[i];
+       
+    }
+
+    //TEST
+    std::cout << CalculateMaxLcm(elements) << "\n";
+    //TEST_END
+
+    return 0;
+}
