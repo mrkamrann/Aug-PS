@@ -1,0 +1,57 @@
+/*
+Link: https://codeforces.com/contest/314/problem/E
+*/
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstring>
+#include <cassert>
+
+
+unsigned int ComputeDpResult(unsigned int len, const std::string& str) {
+  
+    if (len <= 0 || len > 100000) {
+        throw std::invalid_argument("len out of valid range");
+    }
+
+    for (char character : str) {
+        if (character  != '?' && (character  < 'a' || character  > 'z' || character  == 'x')) {
+            throw std::invalid_argument("str contains invalid characters");
+        }
+    }
+  
+    if (len % 2 != 0) {
+        return 0;
+    }
+
+    std::vector<unsigned int> dp_table(len / 2 + 1, 0);
+    dp_table[0] = 1;
+
+    for (unsigned int i = 1; i <= len; ++i) {
+        if (str[i - 1] == '?') {
+            for (unsigned int j = (i >> 1); j >= 1; --j) {
+                dp_table[j] = dp_table[j] * 25 + dp_table[j - 1];
+            }
+            dp_table[0] *= 25;
+        }
+    }
+    return dp_table[len >> 1];
+}
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cstring>
+#include <cassert>
+
+int main() {
+    unsigned int len;
+    std::cin >> len;
+    std::string str;
+    std::cin >> str;
+
+  
+    std::cout << ComputeDpResult(len, str) << std::endl;
+    return 0;
+}
