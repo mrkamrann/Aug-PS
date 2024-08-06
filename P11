@@ -1,3 +1,71 @@
 /*
 Link: https://codeforces.com/contest/1383/problem/E
 */
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <functional>
+#include <stdexcept>
+#include <cassert>
+
+int ComputeResult(const std::string& str) {
+  
+    int len = static_cast<int>(str.length()); 
+  
+    if (len < 1 || len > 1000000) {
+        throw std::invalid_argument("Input string is empty");
+    }
+
+    for (char character : str) {
+        if (character != '0' && character != '1') {
+            throw std::invalid_argument("str contains invalid characters");
+        }
+    }
+
+  
+    std::vector<int> distances(len);
+    for (int index = 0; index < len; index++) {
+        if (str[index] == '0') {
+            distances[index] = (index ? distances[index - 1] : 0) + 1;
+        }
+    }
+
+    std::vector<int> dp_arr(len + 2, 0);
+    std::vector<int> next_index(len + 2, len);
+    int mod = 1000000007;
+  
+    std::function<int(int)> GetValue = [&](int index) { return next_index[index] < len ? dp_arr[next_index[index]] : 0; };
+
+    for (int index = len - 1; index >= 0; index--) {
+        dp_arr[index] = ((distances[index] <= distances.back()) + GetValue(0) + GetValue(distances[index] + 1)) % mod;
+        next_index[distances[index]] = index;
+    }
+
+    int answer = len;
+    if (next_index[0] < len) {
+        answer = static_cast<int>((static_cast<long long>(GetValue(0)) * (next_index[0] + 1)) % mod);
+    }
+
+    return answer;
+}
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <functional>
+#include <stdexcept>
+#include <cassert>
+
+int main() {
+    std::string str;
+    std::cin >> str;
+
+    try {
+        std::cout << ComputeResult(str) << '\n';
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << '\n';
+    }
+
+    return 0;
+}
