@@ -1,0 +1,102 @@
+/*
+Link: https://codeforces.com/contest/912/problem/E
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+void DepthFirstSearch(int root, int current, long long product, const std::vector<long long>& primes, std::vector<long long>& values, int num_primes) {
+    if (current > num_primes) {
+        values.push_back(product);
+        return;
+    }
+    for (long long weight = 1;; weight *= primes[current]) {
+        DepthFirstSearch(root, current + 2, product * weight, primes, values, num_primes);
+        if ((1e18) / primes[current] < weight * product) {
+            return;
+        }
+    }
+}
+
+long long FindKthProduct(std::vector<long long> primes, long long kth_value) {
+  
+   int num_primes = primes.size();
+  
+    if (num_primes < 1 || num_primes > 16) {
+        throw std::invalid_argument("Invalid input values for num_primes");
+    }
+    if (kth_value < 1) {
+        throw std::invalid_argument("Invalid input values for kth_value");
+    }
+    for (int i = 0; i < num_primes; ++i) {
+        if (primes[i] < 2 || primes[i] > 100) {
+            throw std::invalid_argument("Prime number out of allowed range (2 ≤ pi ≤ 100)");
+        }
+    }
+    std::sort(primes.begin(), primes.end());
+    for (int i = 1; i < num_primes; ++i) {
+        if (primes[i] == primes[i - 1]) {
+            throw std::invalid_argument("Prime numbers must be distinct");
+        }
+    }
+
+    std::vector<long long> values_1, values_2;
+    primes.insert(primes.begin(), 0);
+
+    values_1.push_back(0);
+    values_2.push_back(0);
+    DepthFirstSearch(1, 1, 1, primes, values_1, num_primes);
+    DepthFirstSearch(2, 2, 1, primes, values_2, num_primes);
+
+    std::sort(values_1.begin() + 1, values_1.end());
+    std::sort(values_2.begin() + 1, values_2.end());
+
+    long long left = 1, right = 1e18, mid, total, answer = -1;
+    while (left <= right) {
+        mid = (left + right) / 2;
+        total = 0;
+        for (int i = 1, j = values_2.size() - 1; i < values_1.size() && j >= 1; ++i) {
+            while (j >= 1 && mid / values_1[i] < values_2[j]) {
+                --j;
+            }
+            total += j;
+        }
+        if (total < kth_value) {
+            left = mid + 1;
+        } else {
+            answer = mid;
+            right = mid - 1;
+        }
+    }
+    return answer;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    int num_primes;
+    std::cin >> num_primes;
+    std::vector<long long> primes(num_primes);
+    for (int i = 0; i < num_primes; ++i) {
+        std::cin >> primes[i];
+    }
+    long long kth_value;
+    std::cin >> kth_value;
+
+    try {
+        long long result = FindKthProduct(num_primes, primes, kth_value);
+        std::cout << result << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
