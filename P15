@@ -1,0 +1,111 @@
+/*
+Link:  https://codeforces.com/contest/1608/problem/D 
+*/
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+
+long long QuickPower(long long base, long long exponent) {
+    long long result = 1;
+    long long modulus = 998244353;
+    while (exponent) {
+        if (exponent & 1) result = result * base % modulus;
+        base = base * base % modulus;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+long long Combination(int a_val, int b_val) {
+    long long numerator = 1, denominator = 1;
+    long long modulus = 998244353;
+    for (int i = b_val + 1; i <= a_val; ++i) {
+        numerator = numerator * i % modulus;
+        denominator = denominator * (i - b_val) % modulus;
+    }
+    return numerator * QuickPower(denominator, modulus - 2) % modulus;
+}
+
+long long CalculateResult(const std::vector<std::string>& dominoes) {
+  
+   int num_dominoes = dominoes.size();
+  
+    if (num_dominoes < 1 || num_dominoes > 100000) {
+        throw std::invalid_argument("Invalid number of dominoes.");
+    }
+
+    long long total_combinations = 1;
+    int question_count = 0, black_count = 0;
+    long long valid_ways_t1 = 1, valid_ways_t2 = 1;
+    long long modulus = 998244353;
+
+    for (const std::string& domino : dominoes) {
+      
+        if (domino.length() != 2) {
+            throw std::invalid_argument("Each domino must have exactly two cells.");
+        }
+      
+        if(domino[0] != '?' && domino[0] != 'W' && domino[0] != 'B')
+        {
+          throw std::invalid_argument("Invalid character in dominoes");
+        }
+      
+        if(domino[1] != '?' && domino[1] != 'W' && domino[1] != 'B')
+        {
+          throw std::invalid_argument("Invalid character in dominoes");
+        }
+        
+        question_count += (domino[0] == '?') + (domino[1] == '?');
+        black_count += (domino[0] == 'B') + (domino[1] == 'B');
+
+        if (domino[0] == '?' && domino[1] == '?') {
+            total_combinations = (total_combinations * 2) % modulus;
+        } else if (domino[0] == domino[1]) {
+            total_combinations = 0;
+        }
+
+        if (domino[0] == 'W' || domino[1] == 'B') {
+            valid_ways_t1 = 0;
+        }
+
+        if (domino[0] == 'B' || domino[1] == 'W') {
+            valid_ways_t2 = 0;
+        }
+    }
+
+    if (black_count > num_dominoes || black_count + question_count < num_dominoes) {
+        return 0;
+    }
+
+    return (Combination(question_count, num_dominoes - black_count) - total_combinations + modulus + valid_ways_t1 + valid_ways_t2) % modulus;
+}
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    int num_dominoes;
+    std::cin >> num_dominoes;
+
+    std::vector<std::string> dominoes(num_dominoes);
+    for (int i = 0; i < num_dominoes; ++i) {
+        std::cin >> dominoes[i];
+    }
+
+    try {
+        long long result = CalculateResult(dominoes);
+        std::cout << result << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
