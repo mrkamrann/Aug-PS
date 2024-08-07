@@ -1,0 +1,68 @@
+/*
+Link: https://codeforces.com/problemset/problem/932/E
+*/
+
+
+#include <cstdio>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+long long ModuloExponentiation(long long base, int exponent, int mod) {
+    long long result = 1;
+    while (exponent) {
+        if (exponent & 1) {
+            result = result * base % mod;
+        }
+        base = base * base % mod;
+        exponent >>= 1;
+    }
+    return result;
+}
+
+long long CalculateAns(int num, int k_value) {
+  
+    if (num < 1 || num > 1000000000) {
+        throw std::invalid_argument("Invalid input values for num");
+    }
+  
+  
+     if (k_value < 1 || k_value > 5000) {
+        throw std::invalid_argument("Invalid input values for k_value");
+    }
+
+    const int mod = 1000000007;
+    std::vector<std::vector<long long>> dp_arr(k_value + 1, std::vector<long long>(k_value + 1, 0));
+    dp_arr[1][1] = 1;
+    
+    for (int i = 2; i <= k_value; ++i) {
+        for (int j = 1; j <= i; ++j) {
+            dp_arr[i][j] = (dp_arr[i - 1][j - 1] + dp_arr[i - 1][j] * j) % mod;
+        }
+    }
+    
+    long long ans = 0;
+    for (int i = 0, product = 1; i <= k_value && i <= num; product = (long long)product * (num - i) % mod, ++i) {
+        ans = (ans + ModuloExponentiation(2, num - i, mod) * product % mod * dp_arr[k_value][i]) % mod;
+    }
+    
+    return ans;
+}
+
+#include <cstdio>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+
+
+int main() {
+    int num, k_value;
+    if (scanf("%d%d", &num, &k_value) != 2) {
+        throw std::invalid_argument("Invalid input format");
+    }
+    
+    long long result = CalculateAns(num, k_value);
+    printf("%lld", result);
+    
+    return 0;
+}
