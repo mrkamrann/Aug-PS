@@ -1,0 +1,85 @@
+/*
+Link: https://codeforces.com/problemset/problem/1868/C 
+*/
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <climits>
+
+struct Node {
+    long long vertex_function, vertex_goal, vertex_probability;
+};
+
+Node ComputeDp(long long city_count, long long city_value, long long max_city_value, std::vector<Node>& dp_arr) {
+    if (city_count == 0) return {0, 0, 1};
+    if (city_count == 1) return {city_value, city_value, max_city_value};
+    city_count++;
+    if (__builtin_popcountll(city_count) == 1 && dp_arr[__builtin_ctzll(city_count)].vertex_probability) return dp_arr[__builtin_ctzll(city_count)];
+    city_count--;
+    long long right_index = (1ll << (64 - __builtin_clzll(city_count))) - 1;
+    long long left_index = (right_index - 1) >> 1, right_most_index = left_index;
+    long long left_shift = right_index - city_count, divisor_index = (right_index + 1) >> 2;
+    if (left_shift <= divisor_index) right_most_index -= left_shift;
+    else right_most_index -= divisor_index, left_index -= left_shift - divisor_index;
+    Node left_node = ComputeDp(left_index, city_value, max_city_value, dp_arr), right_node = ComputeDp(right_most_index, city_value, max_city_value, dp_arr), result;
+    result.vertex_probability = 1ll * left_node.vertex_probability * right_node.vertex_probability % 998244353;
+    result.vertex_goal = (1ll * left_node.vertex_goal * right_node.vertex_probability % 998244353 + 1ll * right_node.vertex_goal * left_node.vertex_probability % 998244353 + result.vertex_probability) % 998244353 * city_value % 998244353;
+    result.vertex_probability = 1ll * result.vertex_probability * max_city_value % 998244353;
+    result.vertex_function = (1ll * left_node.vertex_goal * right_node.vertex_goal % 998244353 * city_value % 998244353 + result.vertex_goal + (1ll * left_node.vertex_function * right_node.vertex_probability % 998244353 + 1ll * right_node.vertex_function * left_node.vertex_probability % 998244353) % 998244353 * max_city_value % 998244353) % 998244353;
+    city_count++;
+    if (__builtin_popcountll(city_count) == 1) dp_arr[__builtin_ctzll(city_count)] = result;
+    city_count--;
+    return result;
+}
+
+long long Solve(long long city_count, long long max_city_value) {
+  
+    if (city_count < 1 || city_count > 1000000000000000000LL) {
+        throw std::invalid_argument("Invalid input values for city_count");
+    }
+  
+    if (max_city_value < 1 || max_city_value > 100000LL) {
+        throw std::invalid_argument("Invalid input values for  max_city_value");
+    }
+  
+  
+    std::vector<long long> answers(max_city_value + 1);
+    long long final_answer = 0;
+    for (long long city_value = 1; city_value <= max_city_value; ++city_value) {
+        std::vector<Node> dp_arr(100, {0, 0, 0});
+        answers[city_value] = ComputeDp(city_count, city_value, max_city_value, dp_arr).vertex_function;
+    }
+    for (long long city_value = max_city_value; city_value >= 1; --city_value) {
+        (answers[city_value] += -answers[city_value - 1] + 998244353) %= 998244353;
+        (final_answer += answers[city_value] * city_value % 998244353) %= 998244353;
+    }
+    return final_answer;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <cassert>
+#include <climits>
+
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+    int test_cases;
+    std::cin >> test_cases;
+    while (test_cases--) {
+        long long city_count, max_city_value;
+        std::cin >> city_count >> max_city_value;
+        try {
+            std::cout << Solve(city_count, max_city_value) << "\n";
+        } catch (const std::invalid_argument& e) {
+            std::cout << e.what() << "\n";
+        }
+    }
+    return 0;
+}
