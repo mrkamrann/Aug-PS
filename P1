@@ -1,5 +1,25 @@
 /*
 Link : https://codeforces.com/contest/1398/problem/F
+
+Linda and Max play a game. The game consists of several sets, and each set consists of several rounds. Each round is won either by Linda or by Max, and the set ends when one of the players has won x rounds in a row. For example, if Max won five rounds in a row and  x = 2 , then two sets end.
+
+You know that Linda and Max have already played length rounds, and you know the results of some rounds. For each  x  from 1 to length, calculate the maximum possible number of sets that could have already finished if each set lasts until one of the players wins  x  rounds in a row. It is possible that the last set is still not finished — in that case, you should not count it in the answer.
+
+Create a C++ function `CalculateSets` that will return a vector of integers denoting the maximum possible number of sets that could have already finished for each  x  from 1 to length.
+
+Use appropriate error handling using the `stdexcept` library for invalid test cases.
+
+Input Type:
+
+
+ A string `str` of length `length` — the descriptions of rounds. If the i-th element of the string is '0', then Linda won the i-th round; if it is '1', then Max won the i-th round and if it is '?', then you don't know who won the i-th round.
+
+ Input Constraints:
+
+ The length of `input_string` should be at least 1 and at most 1000000 inclusive.
+ The values for `length` should be in the range [1,  1000000] inclusive.
+
+
 */
 
 #include <iostream>
@@ -8,7 +28,7 @@ Link : https://codeforces.com/contest/1398/problem/F
 #include <cassert>
 
 
-std::vector<int> CountSubstrings(const std::string& str) {
+std::vector<int> CalculateSets(const std::string& str) {
   
     int length = str.size();
   
@@ -56,18 +76,109 @@ std::vector<int> CountSubstrings(const std::string& str) {
 #include <cassert>
 
 int main() {
-    std::ios::sync_with_stdio(0);
-    std::cin.tie(0);
-    std::cout.tie(0);
+    //TEST
+std::string str_1 = "01?0";
+std::vector<int> expected_1 = {4,1,0,0,};
+std::vector<int> result_1 = CalculateSets(str_1);
+ assert(result_1 == expected_1);
+//TEST_END
 
-    int length;
-    std::string input_string;
+//TEST
+std::string str_2 = "1111";
+std::vector<int> expected_2 = {4,2,1,1,};
+std::vector<int> result_2 = CalculateSets(str_2);
+ assert(result_2 == expected_2);
+//TEST_END
 
-    std::cin >> length;
-    std::cin >> input_string;
+//TEST
+std::string str_3 = "0000";
+std::vector<int> expected_3 = {4,2,1,1,};
+std::vector<int> result_3 = CalculateSets(str_3);
+ assert(result_3 == expected_3);
+//TEST_END
 
-    std::vector<int> result = CountSubstrings(input_string);
-    for(auto it : result) std::cout<<it<<" ";
+//TEST
+std::string str_4 = "01?1?";
+std::vector<int> expected_4 = {5,2,1,1,0,};
+std::vector<int> result_4 = CalculateSets(str_4);
+ assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::string str_5 = "????";
+std::vector<int> expected_5 = {4,2,1,1,};
+std::vector<int> result_5 = CalculateSets(str_5);
+ assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::string str_6 = "10101010";
+std::vector<int> expected_6 = {8,0,0,0,0,0,0,0,};
+std::vector<int> result_6 = CalculateSets(str_6);
+ assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::string str_7 = "000111000111";
+std::vector<int> expected_7 = {12,4,4,0,0,0,0,0,0,0,0,0,};
+std::vector<int> result_7 = CalculateSets(str_7);
+ assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::string str_8 = "101?10?01?01?";
+std::vector<int> expected_8 = {13,4,2,0,0,0,0,0,0,0,0,0,0,};
+std::vector<int> result_8 = CalculateSets(str_8);
+ assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::string str_9 = "0000000000";
+std::vector<int> expected_9 = {10,5,3,2,2,1,1,1,1,1,};
+std::vector<int> result_9 = CalculateSets(str_9);
+ assert(result_9 == expected_9);
+//TEST_END
+
+//TEST
+try {
+    std::string str_10 = ""; 
+    CalculateSets(str_10);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+try {
+    std::string str_11(1000001, '0');
+    CalculateSets(str_11);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+try {
+    std::string str_12 = "0123";
+    CalculateSets(str_12);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+try {
+    std::string str_13 = "01243"; 
+    CalculateSets(str_13);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+//TEST_END
   
 
     return 0;
