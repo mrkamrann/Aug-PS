@@ -1,8 +1,33 @@
 /*
 Link: https://codeforces.com/contest/1034/problem/C
 REDUCE CONSTRAINTS!!!!
-*/
 
+
+Jeena lives in the Kingdom of Autumn, which consists of a total of total_cities cities, numbered from 1 to total_cities. People can travel between any two cities using total_cities−1 two-directional roads. This year, the government has decided to separate the kingdom into regions of different levels. The entire kingdom will form the region of level 1. Each region of i-th level should be separated into several (at least two) regions of (i+1)-th level, unless the i-th level is the last level. Each city should belong to exactly one region at each level, and for any two cities in the same region, it should be possible to travel between them only through the cities within the same region.
+
+According to research, each city i has a value city_values[i], which describes the importance of this city. All regions of the same level should have an equal sum of city importances.
+
+Jeena's task is to find out how many plans exist to determine the separation of the regions such that all the conditions are satisfied. Two plans are considered different if and only if the number of levels is different or if there exist two cities in the same region of one level in one plan but in different regions at this level in the other plan. Since the number of plans may be very large, the result should be output modulo 10^9 + 7.
+
+Create a C++ Function `CountSeparationPlans` that will return an integer denoting the number of different plans modulo 10^9 + 7.
+
+ Input Type
+
+- A vector<int> denoting city_values
+- A vector<int> denoting road_connections
+
+ Input Constraints
+
+- The length of city_values should be at least 1 and at most 10^6 inclusive.
+- Each value in city_values should be in the range [1, 10^9] inclusive.
+- The length of road_connections should be total_cities-1.
+- Each value of road_connections[i] should be in the range [1, i] inclusive.
+
+
+
+
+
+*/
 #include <iostream>
 #include <vector>
 #include <unordered_map>
@@ -10,9 +35,9 @@ REDUCE CONSTRAINTS!!!!
 #include <cassert>
 #include <numeric>
 
-const int modulus = 1e9 + 7;
+const int MOD = 1e9+7;
 
-int CalculateResults(std::vector<long long>& city_values, std::vector<int>& roads) {
+int CountSeparationPlans(std::vector<long long>& city_values, std::vector<int>& roads) {
     if (city_values.size() < 1 || city_values.size() > 1e6) {
         throw std::invalid_argument("Invalid number of cities");
     }
@@ -66,30 +91,229 @@ int CalculateResults(std::vector<long long>& city_values, std::vector<int>& road
     answer_map[1] = 1;
     for (int index = 1; index <= total_cities; index++) {
         if (frequency_map[index] == index) {
-            answer = (answer + answer_map[index]) % modulus;
+            answer = (answer + answer_map[index]) % MOD;
             for (int multiple_index = 2 * index; multiple_index <= total_cities; multiple_index += index) {
-                answer_map[multiple_index] = (answer_map[multiple_index] + answer_map[index]) % modulus;
+                answer_map[multiple_index] = (answer_map[multiple_index] + answer_map[index]) % MOD;
             }
         }
     }
     
     return answer;
 }
+// #include <iostream>
+// #include <vector>
+// #include <unordered_map>
+// #include <stdexcept>
+// #include <cassert>
+// #include <numeric>
+
+// const int modulus = 1e9+7;
+
+// int CountSeparationPlans(std::vector<long long>& city_values, std::vector<int>& roads) {
+//     if (city_values.size() < 1 || city_values.size() > 1e6) {
+//         throw std::invalid_argument("Invalid number of cities");
+//     }
+//     if (roads.size() != city_values.size() - 1) {
+//         throw std::invalid_argument("Invalid number of roads");
+//     }
+    
+//     for (size_t index = 0; index < city_values.size(); ++index) {
+//         if (city_values[index] < 1 || city_values[index] > 1e9) {
+//             throw std::invalid_argument("City value out of bounds");
+//         }
+//     }
+    
+//     for (size_t index = 0; index < roads.size(); ++index) {
+//         if (roads[index] < 1 || roads[index] > index + 1) {
+//             throw std::invalid_argument("Invalid road connection");
+//         }
+//     }
+    
+//     int total_cities = city_values.size();
+//     int answer = 0;
+//     std::vector<int> previous_city_indices(total_cities + 1);
+//     std::vector<long long> accumulated_sums(total_cities + 1);
+//     std::unordered_map<int, int> frequency_map;
+//     std::unordered_map<int, int> answer_map;
+    
+//     for (int index = 1; index <= total_cities; index++) {
+//         accumulated_sums[index] = city_values[index - 1];
+//     }
+//     for (int index = 1; index <= total_cities - 1; index++) {
+//         previous_city_indices[index] = roads[index - 1];
+//     }
+    
+//     for (int index = total_cities - 1; index > 0; index--) {
+//         accumulated_sums[previous_city_indices[index]] += accumulated_sums[index + 1];
+//     }
+    
+//     for (int index = 1; index <= total_cities; index++) {
+//         long long temp_value = accumulated_sums[1] / std::gcd(accumulated_sums[1], accumulated_sums[index]);
+//         if (temp_value <= total_cities) {
+//             frequency_map[temp_value]++;
+//         }
+//     }
+    
+//     for (int index = total_cities; index > 0; index--) {
+//         for (int multiple_index = 2 * index; multiple_index <= total_cities; multiple_index += index) {
+//             frequency_map[multiple_index] += frequency_map[index];
+//         }
+//     }
+    
+//     answer_map[1] = 1;
+//     for (int index = 1; index <= total_cities; index++) {
+//         if (frequency_map[index] == index) {
+//             answer = (answer + answer_map[index]) % modulus;
+//             for (int multiple_index = 2 * index; multiple_index <= total_cities; multiple_index += index) {
+//                 answer_map[multiple_index] = (answer_map[multiple_index] + answer_map[index]) % modulus;
+//             }
+//         }
+//     }
+    
+//     return answer;
+// }
 
 int main() {
-    int total_cities;
+  //TEST
+std::vector<long long> city_values_1 = {1, 2, 3, 4, 5};
+std::vector<int> roads_1 = {1, 2, 3, 4};
+long long expected_1 = 1;
+long long result_1 = CountSeparationPlans(city_values_1, roads_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    std::scanf("%d", &total_cities);
-    std::vector<long long> city_values(total_cities);
-    std::vector<int> road_connections(total_cities - 1);
-    
-    for (int index = 0; index < total_cities; index++) {
-        std::scanf("%lld", &city_values[index]);
-    }
-    for (int index = 0; index < total_cities - 1; index++) {
-        std::scanf("%d", &road_connections[index]);
-    }
+//TEST
+std::vector<long long> city_values_2 = {10, 20, 30, 40, 50};
+std::vector<int> roads_2 = {1, 1, 1, 1};
+long long expected_2 = 1;
+long long result_2 = CountSeparationPlans(city_values_2, roads_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    std::printf("%d\n", CalculateResults(city_values, road_connections));
-    return 0;
+//TEST
+std::vector<long long> city_values_3 = {1, 1, 1, 1, 1, 1};
+std::vector<int> roads_3 = {1, 2, 3, 4, 5};
+long long expected_3 = 6;
+long long result_3 = CountSeparationPlans(city_values_3, roads_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_4 = {1000000000, 999999999, 999999998, 999999997, 999999996};
+std::vector<int> roads_4 = {1, 2, 3, 4};
+long long expected_4 = 1;
+long long result_4 = CountSeparationPlans(city_values_4, roads_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_5 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+std::vector<int> roads_5 = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+long long expected_5 = 1;
+long long result_5 = CountSeparationPlans(city_values_5, roads_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_6 = {5, 10, 15, 20, 25};
+std::vector<int> roads_6 = {1, 1, 1, 1};
+long long expected_6 = 1;
+long long result_6 = CountSeparationPlans(city_values_6, roads_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_7 = {2, 4, 6, 8, 10};
+std::vector<int> roads_7 = {1, 2, 3, 4};
+long long expected_7 = 1;
+long long result_7 = CountSeparationPlans(city_values_7, roads_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_8 = {9, 8, 7, 6, 5, 4, 3, 2, 1};
+std::vector<int> roads_8 = {1, 2, 3, 4, 5, 6, 7, 8};
+long long expected_8 = 1;
+long long result_8 = CountSeparationPlans(city_values_8, roads_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_9 = {3, 6, 9, 12, 15};
+std::vector<int> roads_9 = {1, 2, 3, 4};
+long long expected_9 = 1;
+long long result_9 = CountSeparationPlans(city_values_9, roads_9);
+ assert(result_9 == expected_9);
+//TEST_END
+
+
+
+//TEST
+std::vector<long long> city_values_10 = {1, 2, 3, 4, 5};
+std::vector<int> roads_10 = {1, 2, 3, 5}; 
+try {
+    CountSeparationPlans(city_values_10, roads_10);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_11 = {1, 2, 3, 4, 5};
+std::vector<int> roads_11 = {1, 2, 3};
+try {
+    CountSeparationPlans(city_values_11, roads_11);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_12 = {1, 2, 3, 4, 5};
+std::vector<int> roads_12 = {1, 2, 3, 6}; 
+try {
+    CountSeparationPlans(city_values_12, roads_12);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_13 = {1, 2, 3, 4, 5};
+std::vector<int> roads_13 = {0, 2, 3, 4}; 
+try {
+    CountSeparationPlans(city_values_13, roads_13);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_14 = {0, 2, 3, 4, 5};
+std::vector<int> roads_14 = {1, 2, 3, 4};
+try {
+    CountSeparationPlans(city_values_14, roads_14);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+//TEST
+std::vector<long long> city_values_15 = {1, 2, 3, 4, 1000000001}; 
+std::vector<int> roads_15 = {1, 2, 3, 4};
+try {
+    CountSeparationPlans(city_values_15, roads_15);
+    assert(false);
+} catch(const std::invalid_argument& e) {
+    assert(true);
+}
+//TEST_END
+
+
+
 }
