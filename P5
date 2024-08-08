@@ -1,5 +1,32 @@
 /*
 Link: https://codeforces.com/problemset/problem/338/D
+
+
+
+June has a table `table_g` of size `num_elements` × `max_value` such that `table_g(i, j) = gcd(i, j)` for all `1 ≤ i ≤ num_elements`, `1 ≤ j ≤ max_value`. `gcd(a, b)` is the greatest common divisor of numbers `a` and `b`.
+
+June has a sequence of positive integer numbers `arr_seq[0], arr_seq[1], ..., arr_seq[arr_len - 1]`. We say that this sequence occurs in `table_g` if it coincides with consecutive elements in some row, starting from some position. More formally, such numbers `1 ≤ row ≤ num_elements` and `1 ≤ col ≤ max_value - arr_len + 1` should exist that `table_g(row, col + l - 1) = arr_seq[l]` for all `1 ≤ l ≤ arr_len`.
+
+Determine if the sequence `arr_seq` occurs in `table_g`.
+
+Create a C++ Function `CheckSequenceInTableG` that will return a string denoting "YES" if the given sequence occurs in `table_g`, otherwise "NO".
+
+Use appropriate Error Handling using the `stdexcept` library for the invalid test cases.
+
+Input Type
+- vector<int> denoting arr 
+- An integer denoting `max_elements`
+- An integer denoting `max_value`
+
+
+Input Constraints
+
+- 1 ≤ num_elements, max_value ≤ 10^12
+- 1 ≤ arr_len ≤ 10000
+- 1 ≤ arr_seq[i] ≤ 10^12 for all 0 ≤ i < arr_len
+
+
+
 */
 
 #include <iostream>
@@ -18,7 +45,7 @@ void ExtendedGcd(long long first_value, long long second_value, long long &x_val
     y_value -= (first_value / second_value) * x_value;
 }
 
-bool IsValidConfiguration(const std::vector<long long>& arr, long long max_elements, long long max_value) {
+bool CheckSequenceInTableG(const std::vector<long long>& arr, long long max_elements, long long max_value) {
     long long arr_len = arr.size();
   
     if (max_elements < 1 || max_elements > 1000000000000LL) {
@@ -75,21 +102,172 @@ bool IsValidConfiguration(const std::vector<long long>& arr, long long max_eleme
 #include <numeric>
 
 int main() {
-    long long num_elements, max_value;
-    int arr_len;
-    std::cin >> num_elements >> max_value >> arr_len;
+    
+    // TEST
+    std::vector<long long> arr_seq_1 = {1, 2, 1};
+    long long num_elements_1 = 3;
+    long long max_value_1 = 4;
+    bool expected_1 = true;
+    bool result_1 = CheckSequenceInTableG(arr_seq_1, num_elements_1, max_value_1);
+    assert(result_1 == expected_1);
+    // TEST_END
 
-    std::vector<long long> arr(arr_len);
-    for (int i = 0; i < arr_len; ++i) {
-        std::cin >> arr[i];
-    }
+    
+    // TEST
+    std::vector<long long> arr_seq_2 = {1, 1, 1};
+    long long num_elements_2 = 3;
+    long long max_value_2 = 4;
+    bool expected_2 = true;
+    bool result_2 = CheckSequenceInTableG(arr_seq_2, num_elements_2, max_value_2);
+    assert(result_2 == expected_2);
+    // TEST_END
 
-    bool result = IsValidConfiguration(arr, num_elements, max_value);
-    if (result) {
-        std::cout << "YES";
-    } else {
-        std::cout << "NO";
+    
+    // TEST
+    std::vector<long long> arr_seq_3 = {2, 2, 2};
+    long long num_elements_3 = 2;
+    long long max_value_3 = 3;
+    bool expected_3 = false;
+    bool result_3 = CheckSequenceInTableG(arr_seq_3, num_elements_3, max_value_3);
+    assert(result_3 == expected_3);
+    // TEST_END
+
+
+    // TEST
+    std::vector<long long> arr_seq_4 = {1, 3, 1};
+    long long num_elements_4 = 4;
+    long long max_value_4 = 5;
+    bool expected_4 = true;
+    bool result_4 = CheckSequenceInTableG(arr_seq_4, num_elements_4, max_value_4);
+    assert(result_4 == expected_4);
+    // TEST_END
+
+
+    // TEST
+    std::vector<long long> arr_seq_5 = {4, 2, 1};
+    long long num_elements_5 = 5;
+    long long max_value_5 = 6;
+    bool expected_5 = false;
+    bool result_5 = CheckSequenceInTableG(arr_seq_5, num_elements_5, max_value_5);
+    assert(result_5 == expected_5);
+    // TEST_END
+
+  
+    // TEST
+    std::vector<long long> arr_seq_6 = {6, 3, 2};
+    long long num_elements_6 = 7;
+    long long max_value_6 = 8;
+    bool expected_6 = false;
+    bool result_6 = CheckSequenceInTableG(arr_seq_6, num_elements_6, max_value_6);
+    assert(result_6 == expected_6);
+    // TEST_END
+
+    
+    // TEST
+    std::vector<long long> arr_seq_7 = {2, 4, 6};
+    long long num_elements_7 = 8;
+    long long max_value_7 = 9;
+    bool expected_7 = false;
+    bool result_7 = CheckSequenceInTableG(arr_seq_7, num_elements_7, max_value_7);
+    assert(result_7 == expected_7);
+    // TEST_END
+
+    
+    // TEST
+    std::vector<long long> arr_seq_8 = {1, 5, 1};
+    long long num_elements_8 = 9;
+    long long max_value_8 = 10;
+    bool expected_8 = true;
+    bool result_8 = CheckSequenceInTableG(arr_seq_8, num_elements_8, max_value_8);
+    assert(result_8 == expected_8);
+    // TEST_END
+
+   
+    // TEST
+    std::vector<long long> arr_seq_9 = {3, 3, 3};
+    long long num_elements_9 = 10;
+    long long max_value_9 = 11;
+    bool expected_9 = false;
+    bool result_9 = CheckSequenceInTableG(arr_seq_9, num_elements_9, max_value_9);
+    assert(result_9 == expected_9);
+    // TEST_END
+
+    
+    // TEST
+    std::vector<long long> arr_seq_10 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    long long num_elements_10 = 12;
+    long long max_value_10 = 13;
+    bool expected_10 = true;
+    bool result_10 = CheckSequenceInTableG(arr_seq_10, num_elements_10, max_value_10);
+    assert(result_10 == expected_10);
+    // TEST_END
+
+    // Error and negative value test cases
+
+ 
+    // TEST
+    std::vector<long long> arr_seq_11 = {-1, 2, 3};
+    long long num_elements_11 = 3;
+    long long max_value_11 = 4;
+    try {
+        CheckSequenceInTableG(arr_seq_11, num_elements_11, max_value_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    // TEST_END
+
+    // TEST
+    std::vector<long long> arr_seq_12 = {1, 2, 3};
+    long long num_elements_12 = -3;
+    long long max_value_12 = 4;
+    try {
+        CheckSequenceInTableG(arr_seq_12, num_elements_12, max_value_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+  
+    // TEST
+    std::vector<long long> arr_seq_13 = {1, 2, 3};
+    long long num_elements_13 = 3;
+    long long max_value_13 = -4;
+    try {
+        CheckSequenceInTableG(arr_seq_13, num_elements_13, max_value_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+  
+    // TEST
+    std::vector<long long> arr_seq_14 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 10001};
+    long long num_elements_14 = 3;
+    long long max_value_14 = 4;
+    try {
+        CheckSequenceInTableG(arr_seq_14, num_elements_14, max_value_14);
+        assert(true);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
+    
+    // TEST
+    std::vector<long long> arr_seq_15 = {1, 2, 3};
+    long long num_elements_15 = 3;
+    long long max_value_15 = 4;
+    try {
+        CheckSequenceInTableG(arr_seq_15, num_elements_15, max_value_15);
+        assert(true);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    // TEST_END
+
 
     return 0;
 }
