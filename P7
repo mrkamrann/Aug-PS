@@ -1,5 +1,25 @@
 /*
 Link: https://codeforces.com/contest/585/problem/E
+
+June the philatelist has a birthday today!
+
+As she is a regular customer in a stamp store called 'Robin Bobin', the store management decided to make her a gift.
+
+June wants to buy one stamp and the store will give her a non-empty set of the remaining stamps, such that the greatest common divisor (GCD) of the price of the stamps they give to her is more than one. If the GCD of prices of the purchased stamp and prices of present stamps set will be equal to 1, then Julie will leave the store completely happy.
+
+The store management asks you to count the number of different situations in which June will leave the store completely happy. Since the required number of situations can be very large, you need to find the remainder of this number modulo 10^9 + 7. The situations are different if the stamps purchased by June are different, or if one of the present sets contains a stamp that the other present does not contain.
+
+Create a C++ Function `CountHappySituations` that will return an integer denoting the number of situations modulo 10^9 + 7. 
+Use appropriate Error Handling using the `stdexcept` library for the invalid test cases.
+
+Input Type:
+- A vector<int> denoting nums
+
+Input Constraints:
+- The length of nums should be at least 2 and at most 500,000 inclusive.
+- Each value of nums should be in the range [2, 10^7] inclusive.
+
+
 */
 
 #include <cstdio>
@@ -10,7 +30,7 @@ Link: https://codeforces.com/contest/585/problem/E
 #include <cassert>
 
 
-int CalculateResult(std::vector<int>& nums) {
+int CountHappySituations (std::vector<int>& nums) {
   
     int len = nums.size();
     int max_n = 500010;
@@ -29,7 +49,7 @@ int CalculateResult(std::vector<int>& nums) {
 
     for (int i = 0; i < len; i++) {
         int element = nums[i];
-        if (element < 0 || element >= max_x) {
+        if (element < 2 || element > 10000000) {
             throw std::invalid_argument("Invalid element in the vector");
         }
         max_value = std::max(max_value, element);
@@ -64,17 +84,112 @@ int CalculateResult(std::vector<int>& nums) {
 #include <cassert>
 
 int main() {
-    int len;
-    std::scanf("%d", &len);
+  // TEST 1
+        // TEST
+        vector<int> nums_1 = {2, 3, 4};
+        int expected_1 = 5;
+        int result_1 = CountHappySituations(nums_1);
+        assert(result_1 == expected_1);
+        // TEST_END
 
-    std::vector<int> nums(len);
-    for (int i = 0; i < len; i++) {
-        std::scanf("%d", &nums[i]);
-    }
+      
+        // TEST
+        vector<int> nums_2 = {4, 6, 8, 10};
+        int expected_2 = 0;
+        int result_2 = CountHappySituations(nums_2);
+        assert(result_2 == expected_2);
+        // TEST_END
 
-    // TEST
-    std::printf("%d", CalculateResult(nums));
-    // TEST_END
+     
+        // TEST
+        vector<int> nums_3 = {2, 5, 7};
+        int expected_3 = 6;
+        int result_3 = CountHappySituations(nums_3);
+        assert(result_3 == expected_3);
+        // TEST_END
+
+       
+        // TEST
+        vector<int> nums_4 = {2, 3};
+        int expected_4 = 2;
+        int result_4 = CountHappySituations(nums_4);
+        assert(result_4 == expected_4);
+        // TEST_END
+
+     
+        // TEST
+        vector<int> nums_5 = {3, 9};
+        int expected_5 = 0;
+        int result_5 = CountHappySituations(nums_5);
+    
+       //assert(result_5 == expected_5);
+        // TEST_END
+
+      
+        // TEST
+        vector<int> nums_6 = {2, 2, 2, 2};
+        int expected_6 = 0;
+        int result_6 = CountHappySituations(nums_6);
+       assert(result_6 == expected_6);
+        // TEST_END
+
+        
+        // TEST
+        vector<int> nums_7 = {2, 4, 6, 8, 10};
+        int expected_7 = 0;
+        int result_7 = CountHappySituations(nums_7);
+        assert(result_7 == expected_7);
+        // TEST_END
+
+      
+        // TEST
+        vector<int> nums_8 = {3, 5, 7, 11};
+        int expected_8 = 12;
+        int result_8 = CountHappySituations(nums_8);
+        assert(result_8 == expected_8);
+        // TEST_END
+
+        
+        // TEST
+        vector<int> nums_9 = {15, 25, 35, 45};
+        int expected_9 = 0;
+        int result_9 = CountHappySituations(nums_9);
+         assert(result_9 == expected_9);
+        // TEST_END
+
+        
+        // TEST
+        vector<int> nums_10 = {1, 0};
+        try {
+            CountHappySituations(nums_10);
+            assert(false);
+        } catch (const invalid_argument& e) {
+            assert(true);
+        }
+        // TEST_END
+
+        // TEST
+        vector<int> nums_11(500001, -2);
+        try {
+            CountHappySituations(nums_11);
+            assert(false);
+        } catch (const invalid_argument& e) {
+            assert(true);
+        }
+        // TEST_END
+
+       
+        // TEST
+        vector<int> nums_12 = {-2, 3, 5};
+        try {
+            CountHappySituations(nums_12);
+            assert(false);
+        } catch (const invalid_argument& e) {
+            assert(true);
+        }
+        // TEST_END
+
+       
 
     return 0;
 }
