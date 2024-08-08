@@ -1,225 +1,219 @@
 /*
-Link: https://codeforces.com/contest/912/problem/E
+Link:  https://codeforces.com/contest/1608/problem/D 
 
+Linda has been given `num_dominoes` dominoes. Each domino has a left and a right cell. Each cell can be colored either black or white. Some cells are already colored, while some aren't yet.
 
-Neena was given a task by her teammate. Unlike Grisha's nice behavior, Oleg, though he had an entire year at his disposal, didn't manage to learn how to solve number theory problems in the past year. That's why instead of Ded Moroz, he was visited by his teammate Andrew, who solemnly presented him with a set of num_primes distinct prime numbers alongside with a simple task: Neena is to find the kth_value smallest integer, such that all its prime divisors are in this set.
+The coloring is said to be valid if and only if it is possible to rearrange the dominoes in some order such that for each 1 <= i <=num_dominoes, the color of the right cell of the ith domino is different from the color of the left cell of the (i mod num\dominoes + 1)-st domino.
 
-Input Type:
+Note that Linda can't rotate the dominoes, so the left cell always remains the left cell, and the right cell always remains the right cell.
 
-- An integer denoting num_primes
-- A vector<int> denoting primes
-- An integer denoting kth_value
+Count the number of valid ways to color the yet uncolored cells of dominoes. Two ways are considered different if there is a cell that is colored white in one way and black in the other. In particular, colorings BW WB and WB BW are different (and both invalid).
 
-Input Constraints:
+As this number can be very big, output it modulo 998244353.
 
-- The value of num_primes should be at least 1 and at most 16 inclusive.
-- Each value in the primes vector should be in the range [2, 100] inclusive and should be in ascending order.
-- The value of kth_value should be at least 1.
-- It is guaranteed that the kth_value smallest integer such that all its prime divisors are in the given set does not exceed 10^18.
-
-Create a C++ Function FindKthSmallestPrimeMultiple that will return an long long integer denoting the kth_value smallest integer such that all its prime divisors are in the given set.
+Create a C++ Function `CountValidColorings` that will return a long long integer denoting the number of valid ways to color the yet uncolored cells of dominoes.
 
 Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector of strings denoting `dominoes`
+An integer denoting `num_dominoes`
+
+Input Constraints
+
+- The value of `num_dominoes` should be at least 1 and at most 10^5 inclusive.
+- Each string in the `dominoes` vector should be of length 2.
+- Each character in the string should be either 'B', 'W', or '?'.
 
 
 */
 
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <string>
 #include <stdexcept>
 #include <cassert>
 
-void DepthFirstSearch(int root, int current, long long product, const std::vector<long long>& primes, std::vector<long long>& values, int num_primes) {
-    if (current > num_primes) {
-        values.push_back(product);
-        return;
+
+long long QuickPower(long long base, long long exponent) {
+    long long result = 1;
+    long long modulus = 998244353;
+    while (exponent) {
+        if (exponent & 1) result = result * base % modulus;
+        base = base * base % modulus;
+        exponent >>= 1;
     }
-    for (long long weight = 1;; weight *= primes[current]) {
-        DepthFirstSearch(root, current + 2, product * weight, primes, values, num_primes);
-        if ((1e18) / primes[current] < weight * product) {
-            return;
-        }
-    }
+    return result;
 }
 
-long long FindKthSmallestPrimeMultiple(std::vector<long long> primes, long long kth_value) {
+long long Combination(int a_val, int b_val) {
+    long long numerator = 1, denominator = 1;
+    long long modulus = 998244353;
+    for (int i = b_val + 1; i <= a_val; ++i) {
+        numerator = numerator * i % modulus;
+        denominator = denominator * (i - b_val) % modulus;
+    }
+    return numerator * QuickPower(denominator, modulus - 2) % modulus;
+}
+
+long long CountValidColorings(const std::vector<std::string>& dominoes) {
   
-   int num_primes = primes.size();
+   int num_dominoes = dominoes.size();
   
-    if (num_primes < 1 || num_primes > 16) {
-        throw std::invalid_argument("Invalid input values for num_primes");
+    if (num_dominoes < 1 || num_dominoes > 100000) {
+        throw std::invalid_argument("Invalid number of dominoes.");
     }
-    if (kth_value < 1) {
-        throw std::invalid_argument("Invalid input values for kth_value");
-    }
-    for (int i = 0; i < num_primes; ++i) {
-        if (primes[i] < 2 || primes[i] > 100) {
-            throw std::invalid_argument("Prime number out of allowed range (2 ≤ pi ≤ 100)");
+
+    long long total_combinations = 1;
+    int question_count = 0, black_count = 0;
+    long long valid_ways_t1 = 1, valid_ways_t2 = 1;
+    long long modulus = 998244353;
+
+    for (const std::string& domino : dominoes) {
+      
+        if (domino.length() != 2) {
+            throw std::invalid_argument("Each domino must have exactly two cells.");
         }
-    }
-    std::sort(primes.begin(), primes.end());
-    for (int i = 1; i < num_primes; ++i) {
-        if (primes[i] == primes[i - 1]) {
-            throw std::invalid_argument("Prime numbers must be distinct");
+      
+        if(domino[0] != '?' && domino[0] != 'W' && domino[0] != 'B')
+        {
+          throw std::invalid_argument("Invalid character in dominoes");
+        }
+      
+        if(domino[1] != '?' && domino[1] != 'W' && domino[1] != 'B')
+        {
+          throw std::invalid_argument("Invalid character in dominoes");
+        }
+        
+        question_count += (domino[0] == '?') + (domino[1] == '?');
+        black_count += (domino[0] == 'B') + (domino[1] == 'B');
+
+        if (domino[0] == '?' && domino[1] == '?') {
+            total_combinations = (total_combinations * 2) % modulus;
+        } else if (domino[0] == domino[1]) {
+            total_combinations = 0;
+        }
+
+        if (domino[0] == 'W' || domino[1] == 'B') {
+            valid_ways_t1 = 0;
+        }
+
+        if (domino[0] == 'B' || domino[1] == 'W') {
+            valid_ways_t2 = 0;
         }
     }
 
-    std::vector<long long> values_1, values_2;
-    primes.insert(primes.begin(), 0);
-
-    values_1.push_back(0);
-    values_2.push_back(0);
-    DepthFirstSearch(1, 1, 1, primes, values_1, num_primes);
-    DepthFirstSearch(2, 2, 1, primes, values_2, num_primes);
-
-    std::sort(values_1.begin() + 1, values_1.end());
-    std::sort(values_2.begin() + 1, values_2.end());
-
-    long long left = 1, right = 1e18, mid, total, answer = -1;
-    while (left <= right) {
-        mid = (left + right) / 2;
-        total = 0;
-        for (int i = 1, j = values_2.size() - 1; i < values_1.size() && j >= 1; ++i) {
-            while (j >= 1 && mid / values_1[i] < values_2[j]) {
-                --j;
-            }
-            total += j;
-        }
-        if (total < kth_value) {
-            left = mid + 1;
-        } else {
-            answer = mid;
-            right = mid - 1;
-        }
+    if (black_count > num_dominoes || black_count + question_count < num_dominoes) {
+        return 0;
     }
-    return answer;
+
+    return (Combination(question_count, num_dominoes - black_count) - total_combinations + modulus + valid_ways_t1 + valid_ways_t2) % modulus;
 }
 
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <string>
 #include <stdexcept>
 #include <cassert>
 
 
 int main() {
-      //TEST
-    std::vector<long long> primes_1 = {2, 3};
-    long long kth_value_1 = 4;
-    long long expected_1 = 4;
-    long long result_1 = FindKthSmallestPrimeMultiple(primes_1, kth_value_1);
- assert(result_1 == expected_1);
+   //TEST
+    std::vector<std::string> dominoes_1 = {"B?", "?W", "??"};
+    long long expected_1 = 5;
+    long long result_1 = CountValidColorings(dominoes_1);
+    assert(result_1 == expected_1);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_2 = {2, 3, 5};
-    long long kth_value_2 = 5;
-    long long expected_2 = 5;
-    long long result_2 = FindKthSmallestPrimeMultiple(primes_2, kth_value_2);
-   assert(result_2 == expected_2);
+    std::vector<std::string> dominoes_2 = {"B?", "B?", "??"};
+    long long expected_2 = 3; 
+    long long result_2 = CountValidColorings(dominoes_2);
+    assert(result_2 == expected_2);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_3 = {2};
-    long long kth_value_3 = 10;
-    long long expected_3 = 512;
-    long long result_3 = FindKthSmallestPrimeMultiple(primes_3, kth_value_3);
-    assert(result_3 == expected_3);
+    std::vector<std::string> dominoes_3 = {"??", "??", "??"};
+    long long expected_3 = 14;
+    long long result_3 = CountValidColorings(dominoes_3);
+   assert(result_3 == expected_3);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_4 = {3, 5};
-    long long kth_value_4 = 7;
-    long long expected_4 = 27;
-    long long result_4 = FindKthSmallestPrimeMultiple(primes_4, kth_value_4);
-assert(result_4 == expected_4);
+    std::vector<std::string> dominoes_4 = {"BW", "WB", "??"};
+    long long expected_4 = 0; 
+    long long result_4 = CountValidColorings(dominoes_4);
+    assert(result_4 == expected_4);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_5 = {2, 3, 7};
-    long long kth_value_5 = 8;
-    long long expected_5 = 9;
-    long long result_5 = FindKthSmallestPrimeMultiple(primes_5, kth_value_5);
+    std::vector<std::string> dominoes_5 = {"B?", "?B", "?W"};
+    long long expected_5 = 2; 
+    long long result_5 = CountValidColorings(dominoes_5);
     assert(result_5 == expected_5);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_6 = {2, 3, 5, 7};
-    long long kth_value_6 = 10;
-    long long expected_6 = 10;
-    long long result_6 = FindKthSmallestPrimeMultiple(primes_6, kth_value_6);
-   assert(result_6 == expected_6);
+    std::vector<std::string> dominoes_6 = {"WB", "W?", "B?"};
+    long long expected_6 = 1; 
+    long long result_6 = CountValidColorings(dominoes_6);
+    assert(result_6 == expected_6);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_7 = {2, 11};
-    long long kth_value_7 = 5;
-    long long expected_7 = 11;
-    long long result_7 = FindKthSmallestPrimeMultiple(primes_7, kth_value_7);
-   assert(result_7 == expected_7);
+    std::vector<std::string> dominoes_7 = {"??", "??", "BW"};
+    long long expected_7 = 3; 
+    long long result_7 = CountValidColorings(dominoes_7);
+     assert(result_7 == expected_7);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_8 = {2, 3, 5, 11};
-    long long kth_value_8 = 12;
-    long long expected_8 = 15;
-    long long result_8 = FindKthSmallestPrimeMultiple(primes_8, kth_value_8);
+    std::vector<std::string> dominoes_8 = {"??", "BW", "WB"};
+    long long expected_8 = 0; 
+    long long result_8 = CountValidColorings(dominoes_8);
     assert(result_8 == expected_8);
     //TEST_END
 
     //TEST
-    std::vector<long long> primes_9 = {2, 3, 5, 7, 11, 13};
-    long long kth_value_9 = 15;
-    long long expected_9 = 15;
-    long long result_9 = FindKthSmallestPrimeMultiple(primes_9, kth_value_9);
-    assert(result_9 == expected_9);
+    std::vector<std::string> dominoes_9 = {"B?", "?W", "WB"};
+    long long expected_9 = 1; 
+    long long result_9 = CountValidColorings(dominoes_9);
+   assert(result_9 == expected_9);
     //TEST_END
 
+
+    
+
     //TEST
+    std::vector<std::string> dominoes_neg_1 = {"B?", "?W", "X?"}; 
     try {
-        std::vector<long long> primes_10 = {101};
-        long long kth_value_10 = 1;
-        FindKthSmallestPrimeMultiple(primes_10, kth_value_10);
+        long long result_neg_1 = CountValidColorings(dominoes_neg_1);
         assert(false);
-    } catch(const std::invalid_argument& e) {
-        assert(true);
+    } catch (const std::invalid_argument& e) {
+         assert(true);
     }
     //TEST_END
 
     //TEST
+    std::vector<std::string> dominoes_neg_2 = {"B?", "?W", "???"}; 
     try {
-        std::vector<long long> primes_11 = {-2};
-        long long kth_value_11 = 1;
-        FindKthSmallestPrimeMultiple(primes_11, kth_value_11);
+        long long result_neg_2 = CountValidColorings(dominoes_neg_2);
         assert(false);
-    } catch(const std::invalid_argument& e) {
-        assert(true);
+    } catch (const std::invalid_argument& e) {
+       assert(true);
     }
     //TEST_END
 
     //TEST
+    std::vector<std::string> dominoes_neg_3 = {}; 
     try {
-        std::vector<long long> primes_12 = {2, 3, 5};
-        long long kth_value_12 = -1;
-        FindKthSmallestPrimeMultiple(primes_12, kth_value_12);
-        assert(false);
-    } catch(const std::invalid_argument& e) {
+        long long result_neg_3 = CountValidColorings(dominoes_neg_3);
+        
+    } catch (const std::invalid_argument& e) {
         assert(true);
     }
     //TEST_END
-
-    //TEST
-    try {
-        std::vector<long long> primes_13 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59};
-        long long kth_value_13 = 1;
-        FindKthSmallestPrimeMultiple(primes_13, kth_value_13);
-        assert(false);
-    } catch(const std::invalid_argument& e) {
-        assert(true);
-    }
-    //TEST_END
-
 
     return 0;
 }
