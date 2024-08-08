@@ -1,5 +1,32 @@
 /*
 Link:  https://codeforces.com/contest/1608/problem/D 
+
+Linda has been given `num_dominoes` dominoes. Each domino has a left and a right cell. Each cell can be colored either black or white. Some cells are already colored, while some aren't yet.
+
+The coloring is said to be valid if and only if it is possible to rearrange the dominoes in some order such that for each 1 <= i <=num_dominoes, the color of the right cell of the ith domino is different from the color of the left cell of the (i mod num\dominoes + 1)-st domino.
+
+Note that Linda can't rotate the dominoes, so the left cell always remains the left cell, and the right cell always remains the right cell.
+
+Count the number of valid ways to color the yet uncolored cells of dominoes. Two ways are considered different if there is a cell that is colored white in one way and black in the other. In particular, colorings BW WB and WB BW are different (and both invalid).
+
+As this number can be very big, output it modulo 998244353.
+
+Create a C++ Function `CountValidColorings` that will return a long long integer denoting the number of valid ways to color the yet uncolored cells of dominoes.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector of strings denoting `dominoes`
+An integer denoting `num_dominoes`
+
+Input Constraints
+
+- The value of `num_dominoes` should be at least 1 and at most 10^5 inclusive.
+- Each string in the `dominoes` vector should be of length 2.
+- Each character in the string should be either 'B', 'W', or '?'.
+
+
 */
 
 #include <iostream>
@@ -30,7 +57,7 @@ long long Combination(int a_val, int b_val) {
     return numerator * QuickPower(denominator, modulus - 2) % modulus;
 }
 
-long long CalculateResult(const std::vector<std::string>& dominoes) {
+long long CountValidColorings(const std::vector<std::string>& dominoes) {
   
    int num_dominoes = dominoes.size();
   
@@ -92,20 +119,101 @@ long long CalculateResult(const std::vector<std::string>& dominoes) {
 
 
 int main() {
-    int num_dominoes;
-    std::cin >> num_dominoes;
+   //TEST
+    std::vector<std::string> dominoes_1 = {"B?", "?W", "??"};
+    long long expected_1 = 5;
+    long long result_1 = CountValidColorings(dominoes_1);
+    assert(result_1 == expected_1);
+    //TEST_END
 
-    std::vector<std::string> dominoes(num_dominoes);
-    for (int i = 0; i < num_dominoes; ++i) {
-        std::cin >> dominoes[i];
-    }
+    //TEST
+    std::vector<std::string> dominoes_2 = {"B?", "B?", "??"};
+    long long expected_2 = 3; 
+    long long result_2 = CountValidColorings(dominoes_2);
+    assert(result_2 == expected_2);
+    //TEST_END
 
+    //TEST
+    std::vector<std::string> dominoes_3 = {"??", "??", "??"};
+    long long expected_3 = 14;
+    long long result_3 = CountValidColorings(dominoes_3);
+   assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_4 = {"BW", "WB", "??"};
+    long long expected_4 = 0; 
+    long long result_4 = CountValidColorings(dominoes_4);
+    assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_5 = {"B?", "?B", "?W"};
+    long long expected_5 = 2; 
+    long long result_5 = CountValidColorings(dominoes_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_6 = {"WB", "W?", "B?"};
+    long long expected_6 = 1; 
+    long long result_6 = CountValidColorings(dominoes_6);
+    assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_7 = {"??", "??", "BW"};
+    long long expected_7 = 3; 
+    long long result_7 = CountValidColorings(dominoes_7);
+     assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_8 = {"??", "BW", "WB"};
+    long long expected_8 = 0; 
+    long long result_8 = CountValidColorings(dominoes_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_9 = {"B?", "?W", "WB"};
+    long long expected_9 = 1; 
+    long long result_9 = CountValidColorings(dominoes_9);
+   assert(result_9 == expected_9);
+    //TEST_END
+
+
+    
+
+    //TEST
+    std::vector<std::string> dominoes_neg_1 = {"B?", "?W", "X?"}; 
     try {
-        long long result = CalculateResult(dominoes);
-        std::cout << result << std::endl;
+        long long result_neg_1 = CountValidColorings(dominoes_neg_1);
+        assert(false);
     } catch (const std::invalid_argument& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+         assert(true);
     }
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_neg_2 = {"B?", "?W", "???"}; 
+    try {
+        long long result_neg_2 = CountValidColorings(dominoes_neg_2);
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+       assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<std::string> dominoes_neg_3 = {}; 
+    try {
+        long long result_neg_3 = CountValidColorings(dominoes_neg_3);
+        
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
 
     return 0;
 }
