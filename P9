@@ -1,5 +1,41 @@
 /*
 Link : https://codeforces.com/contest/1986/problem/G2
+
+
+Jesy is given a permutation of length len. Calculate the number of index pairs 1 ≤ i < j ≤ len such that num[i] * num[j] is divisible by i * j without remainder.
+
+A permutation is a sequence of len integers in which each integer from 1 to len occurs exactly once. For example, [1], [3, 5, 2, 1, 4], [1, 3, 2] are permutations, while [2, 3, 2], [4, 3, 1], [0] are not.
+
+ Input
+
+You are given a vector<int>nums that contains len distinct integers num[1], num[2], ..., num[len] (1 ≤ num[i] ≤ len) — the permutation num.
+
+It is guaranteed that the sum of len for all sets of input data does not exceed 5⋅10^5.
+
+Output
+
+ Return the number of index pairs 1 ≤ i < j ≤ len such that num[i] * num[j] is divisible by i * j without remainder.
+
+Create a C++ Function `CountValidPairs` that will return an integer denoting the number of valid index pairs.
+
+Use the stdexcept library to handle invalid test cases.
+
+Input Type
+
+- A vector<int> denoting len for each test case
+- A vector<vector<int>> denoting num for each test case
+
+ Input Constraints
+
+- The length of num should be at least 1 and at most 5 * 10^5 inclusive.
+- Each value in num should be in the range [1, len] inclusive.
+- The sum of len for all sets of input data should not exceed 5 * 10^5.
+
+
+
+---
+
+
 */
 
 #include <iostream>
@@ -10,7 +46,7 @@ Link : https://codeforces.com/contest/1986/problem/G2
 #include <cassert>
 
 
-long long ComputeResult(std::vector<long long>& nums) {
+long long CountValidPairs(std::vector<long long>& nums) {
   
      int len = nums.size();
   
@@ -68,17 +104,109 @@ long long ComputeResult(std::vector<long long>& nums) {
 
 int main() {
 
-    int test_cases;
-    std::cin >> test_cases;
-    while (test_cases--) {
-        int len;
-        std::cin >> len;
-        std::vector<long long> nums(len);
-        for (int i = 0; i < len; ++i) {
-            std::cin >> nums[i];
-        }
+     //TEST
+    std::vector<long long> nums_1 = {1, 3, 2, 4};
+    long long expected_1 = 2;
+    long long result_1 = CountValidPairs(nums_1);
+    assert(result_1 == expected_1);
+    //TEST_END
 
-        std::cout << ComputeResult(nums) << std::endl;
+    //TEST
+    std::vector<long long> nums_2 = {1, 2, 3, 4, 5};
+    long long expected_2 = 10;
+    long long result_2 = CountValidPairs(nums_2);
+    assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_3 = {2, 3, 1, 5, 4};
+    long long expected_3 = 2;
+    long long result_3 = CountValidPairs(nums_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_4 = {4, 2, 1, 3};
+    long long expected_4 = 2;
+    long long result_4 = CountValidPairs(nums_4);
+   assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_5 = {5, 4, 3, 2, 1};
+    long long expected_5 = 5;
+    long long result_5 = CountValidPairs(nums_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_6 = {1};
+    long long expected_6 = 0;
+    long long result_6 = CountValidPairs(nums_6);
+assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_7 = {1, 2};
+    long long expected_7 = 1;
+    long long result_7 = CountValidPairs(nums_7);
+    assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_8 = {2, 1};
+    long long expected_8 = 1;
+    long long result_8 = CountValidPairs(nums_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_9 = {3, 1, 4, 2};
+    long long expected_9 = 1;
+    long long result_9 = CountValidPairs(nums_9);
+   assert(result_9 == expected_9);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_10 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    long long expected_10 = 45;
+    long long result_10 = CountValidPairs(nums_10);
+    assert(result_10 == expected_10);
+    //TEST_END
+
+  
+    //TEST
+    std::vector<long long> nums_11 = {1, 2, 3, 4, 0};
+    try {
+        long long result_11 = CountValidPairs(nums_11);
+        std::cout << result_11 << std::endl;
+        assert(false); 
+    } catch (const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_12 = {1, 2, 3, 4, 5, 6, 7, 8, 9, -10};
+    try {
+        long long result_12 = CountValidPairs(nums_12);
+        std::cout << result_12 << std::endl;
+        assert(false);
+    } catch (const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> nums_13 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    nums_13.resize(5 * 100000 + 1, 1);
+    try {
+        long long result_13 = CountValidPairs(nums_13);
+        std::cout << result_13 << std::endl;
+        assert(false); 
+    } catch (const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
     return 0;
 }
