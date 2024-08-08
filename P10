@@ -1,5 +1,30 @@
 /*
 Link: https://codeforces.com/contest/314/problem/E
+
+
+Linda painted len points on the plane, point number i (1 ≤ i ≤ len) has coordinates (i, 0). Then Linda marked each point with a small or large English letter. Linda doesn't like the letter "x", so she didn't use it to mark points. Linda thinks that the points are marked beautifully if the following conditions hold:
+
+- All points can be divided into pairs so that each point will belong to exactly one pair;
+- In each pair the point with the lesser abscissa will be marked with a small English letter and the point with the larger abscissa will be marked with the same large English letter;
+- If we built a square on each pair, the pair's points will be the square's opposite points and the segment between them will be the square's diagonal, then among the resulting squares there won't be any intersecting or touching ones.
+
+Little petya erased some small and all large letters marking the points. Now Linda wonders how many ways are there to return the removed letters so that the points were marked beautifully.
+
+Create a C++ Function `CountBeautifulMarks` that will return an unsigned int denoting the number of ways to return the removed letters so that the points were marked beautifully.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type:
+
+- A string denoting str.
+
+Input Constraints:
+
+- The length of str should be at least 1 and at most 10^5 inclusive.
+- Each character in str should be a small English letter or a question mark.
+- The input string does not contain the letter "x".
+
+
 */
 
 #include <iostream>
@@ -9,7 +34,7 @@ Link: https://codeforces.com/contest/314/problem/E
 #include <cassert>
 
 
-unsigned int ComputeDpResult(unsigned int len, const std::string& str) {
+unsigned int CountBeautifulMarks(unsigned int len, const std::string& str) {
   
     if (len <= 0 || len > 100000) {
         throw std::invalid_argument("len out of valid range");
@@ -46,12 +71,151 @@ unsigned int ComputeDpResult(unsigned int len, const std::string& str) {
 #include <cassert>
 
 int main() {
-    unsigned int len;
-    std::cin >> len;
-    std::string str;
-    std::cin >> str;
+       // Valid test cases
+    //TEST
+    unsigned int len_1 = 6;
+    std::string str_1 = "a?A?bB";
+    unsigned int expected_1 = 1;
+    unsigned int result_1 = CountBeautifulMarks(len_1, str_1);
+    std::cout << "result_1: " << result_1 << std::endl; //assert(result_1 == expected_1);
+    //TEST_END
 
-  
-    std::cout << ComputeDpResult(len, str) << std::endl;
+    //TEST
+    unsigned int len_2 = 7;
+    std::string str_2 = "?b?a?A?";
+    unsigned int expected_2 = 1;
+    unsigned int result_2 = CountBeautifulMarks(len_2, str_2);
+    std::cout << "result_2: " << result_2 << std::endl; //assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    unsigned int len_3 = 4;
+    std::string str_3 = "????";
+    unsigned int expected_3 = 26 * 26;
+    unsigned int result_3 = CountBeautifulMarks(len_3, str_3);
+    std::cout << "result_3: " << result_3 << std::endl; //assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    unsigned int len_4 = 2;
+    std::string str_4 = "aA";
+    unsigned int expected_4 = 1;
+    unsigned int result_4 = CountBeautifulMarks(len_4, str_4);
+    std::cout << "result_4: " << result_4 << std::endl; //assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    unsigned int len_5 = 3;
+    std::string str_5 = "a?A";
+    unsigned int expected_5 = 1;
+    unsigned int result_5 = CountBeautifulMarks(len_5, str_5);
+    std::cout << "result_5: " << result_5 << std::endl; //assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    unsigned int len_6 = 10;
+    std::string str_6 = "a?A?b?B?c?C";
+    unsigned int expected_6 = 1;
+    unsigned int result_6 = CountBeautifulMarks(len_6, str_6);
+    std::cout << "result_6: " << result_6 << std::endl; //assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    unsigned int len_7 = 2;
+    std::string str_7 = "??";
+    unsigned int expected_7 = 26 * 26;
+    unsigned int result_7 = CountBeautifulMarks(len_7, str_7);
+    std::cout << "result_7: " << result_7 << std::endl; //assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    unsigned int len_8 = 8;
+    std::string str_8 = "a?A?b?B?";
+    unsigned int expected_8 = 1;
+    unsigned int result_8 = CountBeautifulMarks(len_8, str_8);
+    std::cout << "result_8: " << result_8 << std::endl; //assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    unsigned int len_9 = 5;
+    std::string str_9 = "a?A?b";
+    unsigned int expected_9 = 1;
+    unsigned int result_9 = CountBeautifulMarks(len_9, str_9);
+    std::cout << "result_9: " << result_9 << std::endl; //assert(result_9 == expected_9);
+    //TEST_END
+
+    // Invalid test cases
+    //TEST
+    unsigned int len_10 = 1;
+    std::string str_10 = "a";
+    unsigned int expected_10 = 0;
+    unsigned int result_10 = CountBeautifulMarks(len_10, str_10);
+    std::cout << "result_10: " << result_10 << std::endl; //assert(result_10 == expected_10);
+    //TEST_END
+
+    //TEST
+    unsigned int len_11 = 6;
+    std::string str_11 = "a?A?bB";
+    try {
+        unsigned int result_11 = CountBeautifulMarks(len_11, str_11);
+        std::cout << "result_11: " << result_11 << std::endl;
+        assert(false); // Should not reach here
+    } catch (const std::invalid_argument& e) {
+        std::cout << "result_11: Exception caught" << std::endl;
+        assert(true); // Expected to catch an invalid argument exception
+    }
+    //TEST_END
+
+    //TEST
+    unsigned int len_12 = 3;
+    std::string str_12 = "a?a";
+    try {
+        unsigned int result_12 = CountBeautifulMarks(len_12, str_12);
+        std::cout << "result_12: " << result_12 << std::endl;
+        assert(false); // Should not reach here
+    } catch (const std::invalid_argument& e) {
+        std::cout << "result_12: Exception caught" << std::endl;
+        assert(true); // Expected to catch an invalid argument exception
+    }
+    //TEST_END
+
+    //TEST
+    unsigned int len_13 = 3;
+    std::string str_13 = "aA?";
+    try {
+        unsigned int result_13 = CountBeautifulMarks(len_13, str_13);
+        std::cout << "result_13: " << result_13 << std::endl;
+        assert(false); // Should not reach here
+    } catch (const std::invalid_argument& e) {
+        std::cout << "result_13: Exception caught" << std::endl;
+        assert(true); // Expected to catch an invalid argument exception
+    }
+    //TEST_END
+
+    //TEST
+    unsigned int len_14 = 4;
+    std::string str_14 = "abAB";
+    try {
+        unsigned int result_14 = CountBeautifulMarks(len_14, str_14);
+        std::cout << "result_14: " << result_14 << std::endl;
+        assert(false); // Should not reach here
+    } catch (const std::invalid_argument& e) {
+        std::cout << "result_14: Exception caught" << std::endl;
+        assert(true); // Expected to catch an invalid argument exception
+    }
+    //TEST_END
+
+    //TEST
+    unsigned int len_15 = 2;
+    std::string str_15 = "aA";
+    try {
+        unsigned int result_15 = CountBeautifulMarks(len_15, str_15);
+        std::cout << "result_15: " << result_15 << std::endl;
+        assert(false); // Should not reach here
+    } catch (const std::invalid_argument& e) {
+        std::cout << "result_15: Exception caught" << std::endl;
+        assert(true); // Expected to catch an invalid argument exception
+    }
+    //TEST_END
     return 0;
 }
