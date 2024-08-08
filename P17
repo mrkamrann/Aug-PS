@@ -39,30 +39,42 @@ int CalculateCircularCombinations(int num) {
     }
 
     const int mod = 1000000007;
-    const int max_num = 1000001;
+    const int max_num = num + 10;
     
     std::vector<std::vector<int>> factors(max_num);
+  
     for (int i = 2; i < max_num; i++) {
+      
         if (factors[i].empty()) {
+          
             for (int j = i; j < max_num; j += i) {
+              
                 factors[j].push_back(i);
             }
         }
     }
     
     std::vector<int> current(max_num), dp_arr(max_num);
+  
     int addition = 0;
+  
     for (int i = 2; i < max_num; i++) {
+      
         for (int factor : factors[i]) {
+          
             addition = (addition - (current[factor]--) + mod) % mod;
+          
             current[factor] = (current[factor] == -1 ? factor - 1 : current[factor]);
+          
             addition = (addition + current[factor]) % mod;
         }
         dp_arr[i] = (dp_arr[i - 1] + addition) % mod;
     }
     
     for (int i = 3; i < max_num; i++) {
+      
         dp_arr[i] = (dp_arr[i] + ((i - 3) / 8 * 8LL)) % mod;
+      
         dp_arr[i] = (dp_arr[i] + std::min(((i - 3) % 8), 4) * 2LL) % mod;
     }
     
@@ -75,16 +87,100 @@ int CalculateCircularCombinations(int num) {
 #include <cassert>
 
 int main() {
-    std::ios::sync_with_stdio(0);
-    std::cin.tie(0);
-    
-    int test_cases;
-    std::cin >> test_cases;
-    while (test_cases--) {
-        int num;
-        std::cin >> num;
-        std::cout << CalculateResult(num) << '\n';
-    }
+   
+  //TEST
+int num_1 = 1;
+int expected_1 = 0;
+int result_1 = CalculateCircularCombinations(num_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int num_2 = 3;
+int expected_2 = 4;
+int result_2 = CalculateCircularCombinations(num_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int num_3 = 6;
+int expected_3 = 24;
+int result_3 = CalculateCircularCombinations(num_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int num_4 = 314159;
+int expected_4 = 78926217;
+int result_4 = CalculateCircularCombinations(num_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int num_5 = 1;
+int expected_5 = 0;
+int result_5 = CalculateCircularCombinations(num_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int num_6 = 3;
+int expected_6 = 4;
+int result_6 = CalculateCircularCombinations(num_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int num_7 = 7;
+int expected_7 = 38;
+int result_7 = CalculateCircularCombinations(num_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int num_8 = 8;
+int expected_8 = 49;
+int result_8 = CalculateCircularCombinations(num_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int num_9 = 9;
+int expected_9 = 59;
+int result_9 = CalculateCircularCombinations(num_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+int num_10 = -1;
+try {
+CalculateCircularCombinations(num_10);
+assert(false);
+} catch(const std::invalid_argument& e) {
+assert(true);
+}
+//TEST_END
+
+//TEST
+int num_11 = 0;
+try {
+CalculateCircularCombinations(num_11);
+assert(false);
+} catch(const std::invalid_argument& e) {
+assert(true);
+}
+//TEST_END
+
+//TEST
+int num_12 = 1000001;
+try {
+CalculateCircularCombinations(num_12);
+assert(false);
+} catch(const std::invalid_argument& e) {
+assert(true);
+}
+//TEST_END
     
     return 0;
 }
