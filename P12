@@ -1,5 +1,42 @@
 /*
 Link: https://codeforces.com/contest/1713/problem/F
+
+
+
+Ema discovered a famous vector `arr` (1-indexed) of length `len` that contains information about the world and life. After that, Ema decided to convert it into the matrix `mat` (0-indexed) of size `(len+1)×(len+1)` which contains information about the world, life, and beyond.
+
+Ema converted `arr` into `mat` with the following rules:
+
+- `mat[i][0] = 0` if `0 ≤ i ≤ len`;
+- `mat[0][i] = arr[i]` if `1 ≤ i ≤ len`;
+- `mat[i][j] = mat[i][j-1] ⊕ mat[i-1][j]` if `1 ≤ i, j ≤ len`.
+
+Here, `⊕` denotes the bitwise XOR operation.
+
+Today, archaeologists have discovered the famous matrix `mat`. However, many elements of the matrix have been lost. They only know the values of `mat[i][len]` for `1 ≤ i ≤ len` (note that these are some elements of the last column, not the last row).
+
+The archaeologists want to know what a possible vector of `arr` is. Can you help them reconstruct any vector that could be `arr`?
+
+Create a C++ Function `ReconstructArray` that will return a vector of integers denoting the vector`arr`. 
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+ Input Type
+
+- A vector of integers `arr` denoting the last column of the matrix `mat`.
+- An integer `len` denoting the length of the array `arr`.
+
+ Input Constraints
+
+- The length of `arr` should be at least 1 and at most `5 * 10^5` inclusive.
+- Each value in `arr` should be in the range `[0, 2^30)`.
+
+Output
+If some vector `arr` is consistent with the information, return a line containing `len` integers `arr1, arr2, ..., arr[len]`. If there are multiple solutions, return any.
+
+If such a vector does not exist, return `-1` instead.
+
+
 */
 
 #include <iostream>
@@ -10,7 +47,7 @@ Link: https://codeforces.com/contest/1713/problem/F
 #include <cassert>
 #include <algorithm>
 
-std::vector<int> TransformArray(std::vector<int>& arr) {
+std::vector<int> ReconstructArray(std::vector<int>& arr) {
   
     int len = static_cast<int>(arr.size());
   
@@ -65,21 +102,133 @@ std::vector<int> TransformArray(std::vector<int>& arr) {
 #include <algorithm>
 
 int main() {
-    int len;
-    std::cin >> len;
+//TEST
+std::vector<int> arr_1 = {3, 1, 4, 1, 5};
+std::vector<int> expected_1 = {6,7,0,5,7,}; 
+std::vector<int> result_1 = ReconstructArray(arr_1);
+ assert(result_1 == expected_1);
+//TEST_END
 
-    std::vector<int> arr(len);
-    for (int i = 0; i < len; ++i) {
-        std::cin >> arr[i];
-    }
+//TEST
+std::vector<int> arr_2 = {1, 0, 1, 0, 1};
+std::vector<int> expected_2 = { 0,0,0,1,0,}; 
+std::vector<int> result_2 = ReconstructArray(arr_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    std::vector<int> result = TransformArray(arr);
+//TEST
+std::vector<int> arr_3 = {0, 0, 0, 0, 0};
+std::vector<int> expected_3 = {0, 0, 0, 0, 0}; 
+std::vector<int> result_3 = ReconstructArray(arr_3);
+assert(result_3 == expected_3);
+//TEST_END
 
-    for (int i = 0; i < len; ++i) {
-        std::cout << result[i] << ' ';
-    }
-    std::cout << std::endl;
+//TEST
+std::vector<int> arr_4 = {1, 1, 1, 1, 1};
+std::vector<int> expected_4 = {0,0,0,0,1,}; 
+std::vector<int> result_4 = ReconstructArray(arr_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+std::vector<int> arr_5 = {2, 3, 4, 5, 6};
+std::vector<int> expected_5 = {4,0,6,1,1,}; 
+std::vector<int> result_5 = ReconstructArray(arr_5);
+ assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+std::vector<int> arr_6 = {9, 8, 7, 6, 5};
+std::vector<int> expected_6 = {12,0,14,1,10,}; 
+std::vector<int> result_6 = ReconstructArray(arr_6);
+ assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+std::vector<int> arr_7 = {1, 2, 3, 4, 5};
+std::vector<int> expected_7 = {4,4,6,7,0,}; 
+std::vector<int> result_7 = ReconstructArray(arr_7);
+ assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+std::vector<int> arr_8 = {6, 7, 8, 9, 10};
+std::vector<int> expected_8 = {12,0,14,1,5,}; 
+std::vector<int> result_8 = ReconstructArray(arr_8);
+ assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+std::vector<int> arr_9 = {3, 5, 7, 9, 11};
+std::vector<int> expected_9 = {8,8,12,14,1,}; 
+std::vector<int> result_9 = ReconstructArray(arr_9);
+ assert(result_9 == expected_9);
+//TEST_END
+    //TEST
+std::vector<int> arr_10 = {-1, 2, 3};
+try {
+    std::vector<int> result_10 = ReconstructArray(arr_10);
+    
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+std::vector<int> arr_11 = {1, 2, 3, (1 << 30)};
+try {
+    std::vector<int> result_11 = ReconstructArray(arr_11);
+  
+    assert(false);
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+std::vector<int> arr_12 = {1, 2, 3, -5};
+try {
+    std::vector<int> result_12 = ReconstructArray(arr_12);
+ 
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+std::vector<int> arr_13 = {0, -2, 3, 1000000001};
+try {
+    std::vector<int> result_13 = ReconstructArray(arr_13);
+  
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+std::vector<int> arr_14 = {};
+try {
+    std::vector<int> result_14 = ReconstructArray(arr_14);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+std::vector<int> arr_15 = {1, -1, 3};
+try {
+    std::vector<int> result_15 = ReconstructArray(arr_15);
+ 
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+
+    assert(true); 
+}
+//TEST_END
 
     return 0;
 }
-
