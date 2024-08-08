@@ -1,5 +1,29 @@
 /*
 Link: https://codeforces.com/contest/1687/problem/D
+
+
+Linda is a character who loves creating cute Maths problems.
+
+Let f(x)  be the minimal square number strictly greater than  x , and  g(x)  be the maximal square number less than or equal to  x . For example, f(1) = f(2) = g(4) = g(8) = 4 .
+
+A positive integer  x  is cute if  x - g(x) < f(x) - x . For example, 1, 5, and 11 are cute integers, while 3, 8, and 15 are not.
+
+Linda gives you an vector values of length len. She wants you to find the smallest non-negative integer k such that values[i] + k is a cute number for any element of values.
+
+Create a C++ Function FindMinimumK that will return an integer denoting the smallest non-negative integer k required. 
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+A vector<int> denoting values
+
+ Input Constraints
+
+ The length of values should be at least 1 and at most 1,000,000 inclusive.
+ Each value in values should be a positive integer.
+
+
+
 */
 
 #include <vector>
@@ -7,7 +31,7 @@ Link: https://codeforces.com/contest/1687/problem/D
 #include <stdexcept>
 #include <algorithm>
 
-long long FindTwinClusters(std::vector<long long>& values) {
+long long FindMinimumK(std::vector<long long>& values) {
   
     int len = values.size();
 
@@ -59,24 +83,114 @@ long long FindTwinClusters(std::vector<long long>& values) {
     }
 }
 
-#include <vector>
-#include <cstdio>
-#include <stdexcept>
-#include <algorithm>
+
 
 int main() {
   
-    int len;
-    std::scanf("%lld", &len);
-    std::vector<long long> values(len);
-    for (int i = 0; i < len; ++i) {
-        std::scanf("%lld", &values[i]);
+  //TEST
+    std::vector<long long> values_1 = {1, 5, 11};
+    long long expected_1 = 0;
+    long long result_1 = FindMinimumK(values_1);
+ assert(result_1 == expected_1);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_2 = {3, 8, 15};
+    long long expected_2 = 1;
+    long long result_2 = FindMinimumK(values_2);
+  assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_3 = {2, 3, 4};
+    long long expected_3 = 2;
+    long long result_3 = FindMinimumK(values_3);
+ assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_4 = {8, 15, 24};
+    long long expected_4 = 1;
+    long long result_4 = FindMinimumK(values_4);
+ assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_5 = {10, 14, 20};
+    long long expected_5 = 6;
+    long long result_5 = FindMinimumK(values_5);
+  assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_6 = {6, 9, 25};
+    long long expected_6 = 0;
+    long long result_6 = FindMinimumK(values_6);
+ assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_7 = {7, 13, 22};
+    long long expected_7 = 3;
+    long long result_7 = FindMinimumK(values_7);
+ assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_8 = {16, 23, 30};
+    long long expected_8 = 26;
+    long long result_8 = FindMinimumK(values_8);
+assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_9 = {5, 12, 17};
+    long long expected_9 = 0;
+    long long result_9 = FindMinimumK(values_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+    
+    //TEST
+    std::vector<long long> values_10 = {5, 7, -9};
+    try {
+        FindMinimumK(values_10);
+        assert(false); 
+    } catch (const std::invalid_argument& e) {
+        assert(true); 
     }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_11 = {-1, 0, 3};
+    try {
+        FindMinimumK(values_11);
+        assert(false); 
+    } catch (const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_12 = {};
+    try {
+        FindMinimumK(values_12);
+        assert(false); 
+    } catch (const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
+
+    //TEST
+    std::vector<long long> values_13 = {0, -5};
+    try {
+        FindMinimumK(values_13);
+        assert(false); 
+    } catch (const std::invalid_argument& e) {
+        assert(true); 
+    }
+    //TEST_END
+
     
-    long long result = FindTwinClusters(values);
-   
-        std::printf("%lld\n", result);
-    
-    
-    return 0;
+    return 0;
 }
