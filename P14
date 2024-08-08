@@ -1,5 +1,27 @@
 /*
 Link: https://codeforces.com/contest/912/problem/E
+
+
+Neena was given a task by her teammate. Unlike Grisha's nice behavior, Oleg, though he had an entire year at his disposal, didn't manage to learn how to solve number theory problems in the past year. That's why instead of Ded Moroz, he was visited by his teammate Andrew, who solemnly presented him with a set of num_primes distinct prime numbers alongside with a simple task: Neena is to find the kth_value smallest integer, such that all its prime divisors are in this set.
+
+Input Type:
+
+- An integer denoting num_primes
+- A vector<int> denoting primes
+- An integer denoting kth_value
+
+Input Constraints:
+
+- The value of num_primes should be at least 1 and at most 16 inclusive.
+- Each value in the primes vector should be in the range [2, 100] inclusive and should be in ascending order.
+- The value of kth_value should be at least 1.
+- It is guaranteed that the kth_value smallest integer such that all its prime divisors are in the given set does not exceed 10^18.
+
+Create a C++ Function FindKthSmallestPrimeMultiple that will return an long long integer denoting the kth_value smallest integer such that all its prime divisors are in the given set.
+
+Use appropriate Error Handling using the stdexcept library for the invalid test cases.
+
+
 */
 
 #include <iostream>
@@ -21,7 +43,7 @@ void DepthFirstSearch(int root, int current, long long product, const std::vecto
     }
 }
 
-long long FindKthProduct(std::vector<long long> primes, long long kth_value) {
+long long FindKthSmallestPrimeMultiple(std::vector<long long> primes, long long kth_value) {
   
    int num_primes = primes.size();
   
@@ -82,21 +104,122 @@ long long FindKthProduct(std::vector<long long> primes, long long kth_value) {
 
 
 int main() {
-    int num_primes;
-    std::cin >> num_primes;
-    std::vector<long long> primes(num_primes);
-    for (int i = 0; i < num_primes; ++i) {
-        std::cin >> primes[i];
-    }
-    long long kth_value;
-    std::cin >> kth_value;
+      //TEST
+    std::vector<long long> primes_1 = {2, 3};
+    long long kth_value_1 = 4;
+    long long expected_1 = 4;
+    long long result_1 = FindKthSmallestPrimeMultiple(primes_1, kth_value_1);
+ assert(result_1 == expected_1);
+    //TEST_END
 
+    //TEST
+    std::vector<long long> primes_2 = {2, 3, 5};
+    long long kth_value_2 = 5;
+    long long expected_2 = 5;
+    long long result_2 = FindKthSmallestPrimeMultiple(primes_2, kth_value_2);
+   assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> primes_3 = {2};
+    long long kth_value_3 = 10;
+    long long expected_3 = 512;
+    long long result_3 = FindKthSmallestPrimeMultiple(primes_3, kth_value_3);
+    assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> primes_4 = {3, 5};
+    long long kth_value_4 = 7;
+    long long expected_4 = 27;
+    long long result_4 = FindKthSmallestPrimeMultiple(primes_4, kth_value_4);
+assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> primes_5 = {2, 3, 7};
+    long long kth_value_5 = 8;
+    long long expected_5 = 9;
+    long long result_5 = FindKthSmallestPrimeMultiple(primes_5, kth_value_5);
+    assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> primes_6 = {2, 3, 5, 7};
+    long long kth_value_6 = 10;
+    long long expected_6 = 10;
+    long long result_6 = FindKthSmallestPrimeMultiple(primes_6, kth_value_6);
+   assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> primes_7 = {2, 11};
+    long long kth_value_7 = 5;
+    long long expected_7 = 11;
+    long long result_7 = FindKthSmallestPrimeMultiple(primes_7, kth_value_7);
+   assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> primes_8 = {2, 3, 5, 11};
+    long long kth_value_8 = 12;
+    long long expected_8 = 15;
+    long long result_8 = FindKthSmallestPrimeMultiple(primes_8, kth_value_8);
+    assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::vector<long long> primes_9 = {2, 3, 5, 7, 11, 13};
+    long long kth_value_9 = 15;
+    long long expected_9 = 15;
+    long long result_9 = FindKthSmallestPrimeMultiple(primes_9, kth_value_9);
+    assert(result_9 == expected_9);
+    //TEST_END
+
+    //TEST
     try {
-        long long result = FindKthProduct(num_primes, primes, kth_value);
-        std::cout << result << std::endl;
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::vector<long long> primes_10 = {101};
+        long long kth_value_10 = 1;
+        FindKthSmallestPrimeMultiple(primes_10, kth_value_10);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
     }
+    //TEST_END
+
+    //TEST
+    try {
+        std::vector<long long> primes_11 = {-2};
+        long long kth_value_11 = 1;
+        FindKthSmallestPrimeMultiple(primes_11, kth_value_11);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    try {
+        std::vector<long long> primes_12 = {2, 3, 5};
+        long long kth_value_12 = -1;
+        FindKthSmallestPrimeMultiple(primes_12, kth_value_12);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
+    //TEST
+    try {
+        std::vector<long long> primes_13 = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59};
+        long long kth_value_13 = 1;
+        FindKthSmallestPrimeMultiple(primes_13, kth_value_13);
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        assert(true);
+    }
+    //TEST_END
+
 
     return 0;
 }
