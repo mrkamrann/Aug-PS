@@ -1,7 +1,5 @@
 /*
 Link: https://codeforces.com/contest/1034/problem/C
-REDUCE CONSTRAINTS!!!!
-
 
 Jeena lives in the Kingdom of Autumn, which consists of a total of total_cities cities, numbered from 1 to total_cities. People can travel between any two cities using total_cities−1 two-directional roads. This year, the government has decided to separate the kingdom into regions of different levels. The entire kingdom will form the region of level 1. Each region of i-th level should be separated into several (at least two) regions of (i+1)-th level, unless the i-th level is the last level. Each city should belong to exactly one region at each level, and for any two cities in the same region, it should be possible to travel between them only through the cities within the same region.
 
