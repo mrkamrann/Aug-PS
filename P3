@@ -1,5 +1,33 @@
 /*
 Link: https://codeforces.com/contest/896/problem/D
+
+
+
+Linda loves to make movies, so Nephren helps her run a cinema. We may call it No. 68 Cinema.
+However, one day, the No. 68 Cinema runs out of changes (they don't have 50-yuan notes currently), but Nephren still wants to start their business. (Assume that yuan is a kind of currency in Regulure.
+
+There are three types of customers: some of them bring exactly a 50-yuan note; some of them bring a 100-yuan note and Nephren needs to give a 50-yuan note back to him/her; some of them bring VIP cards so that they don't need to pay for the ticket.
+
+Now n customers are waiting outside in queue. Nephren wants to know how many possible queues are there that they are able to run smoothly (i.e. every customer can receive his/her change), and that the number of 50-yuan notes they have after selling tickets to all these customers is between l and r, inclusive. Two queues are considered different if there exists a customer whose type is different in two queues. As the number can be large, please output the answer modulo p.
+
+Create a C++ Function `CountPossibleQueues` that will return an integer denoting the number of possible queues that can run smoothly, modulo `M`.
+
+Use appropriate Error Handling using the `stdexcept` library for the invalid test cases.
+
+Input Type
+
+- An integer denoting `n`.
+- An integer denoting `M`.
+- An integer denoting `L`.
+- An integer denoting `R`.
+
+ Input Constraints
+
+- The value of `n` should be at least 1 and at most 100,000 inclusive.
+- The value of `M` should be at least 1 and at most 2,000,000,000 inclusive.
+- The value of `L` and `R` should be in the range [0, n] inclusive.
+
+
 */
 
 #include <vector>
@@ -66,7 +94,7 @@ void PrepareFactorials(int num, long long modulus, std::vector<long long>& facto
     }
 }
 
-long long ComputeAnswer(long long num, long long modulus, long long left, long long right) {
+long long CountPossibleQueues(long long num, long long modulus, long long left, long long right) {
     
    if (num < 1 || num > 100000 ) {
         throw std::invalid_argument("Invalid value of num");
@@ -107,14 +135,186 @@ long long ComputeAnswer(long long num, long long modulus, long long left, long l
 
 int main() {
   
-  long long n;
-    long long M, L, R;
-    std::scanf("%lld %lld %lld %lld", &n, &M, &L, &R);
+  //TEST
+long long num_1 = 1;
+long long modulus_1 = 1000000007;
+long long left_1 = 0;
+long long right_1 = 1;
+long long expected_1 = 2; 
+long long result_1 = CountPossibleQueues(num_1, modulus_1, left_1, right_1);
+assert(result_1 == expected_1);
+//TEST_END
 
-    long long result = ComputeAnswer(n, M, L, R);
+//TEST
+long long num_2 = 3;
+long long modulus_2 = 1000000007;
+long long left_2 = 1;
+long long right_2 = 2;
+long long expected_2 = 8; 
+long long result_2 = CountPossibleQueues(num_2, modulus_2, left_2, right_2);
+assert(result_2 == expected_2);
+//TEST_END
 
-    std::printf("%lld\n", result);
+//TEST
+long long num_3 = 5;
+long long modulus_3 = 2000000000;
+long long left_3 = 0;
+long long right_3 = 3;
+long long expected_3 = 90; 
+long long result_3 = CountPossibleQueues(num_3, modulus_3, left_3, right_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+long long num_4 = 10;
+long long modulus_4 = 999999937;
+long long left_4 = 2;
+long long right_4 = 5;
+long long expected_4 = 10680;
+long long result_4 = CountPossibleQueues(num_4, modulus_4, left_4, right_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+long long num_5 = 100;
+long long modulus_5 = 1000000000;
+long long left_5 = 10;
+long long right_5 = 50;
+long long expected_5 = 447951150; 
+long long result_5 = CountPossibleQueues(num_5, modulus_5, left_5, right_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+long long num_6 = 50;
+long long modulus_6 = 1500000000;
+long long left_6 = 5;
+long long right_6 = 25;
+long long expected_6 = 1243483500; 
+long long result_6 = CountPossibleQueues(num_6, modulus_6, left_6, right_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+long long num_7 = 500;
+long long modulus_7 = 123456789;
+long long left_7 = 50;
+long long right_7 = 300;
+long long expected_7 = 99759078;
+long long result_7 = CountPossibleQueues(num_7, modulus_7, left_7, right_7);
+    assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+long long num_8 = 1000;
+long long modulus_8 = 2000000000;
+long long left_8 = 100;
+long long right_8 = 700;
+long long expected_8 = 231708490; 
+long long result_8 = CountPossibleQueues(num_8, modulus_8, left_8, right_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+long long num_9 = 10000;
+long long modulus_9 = 1000000000;
+long long left_9 = 500;
+long long right_9 = 7500;
+long long expected_9 = 907934760; 
+long long result_9 = CountPossibleQueues(num_9, modulus_9, left_9, right_9);
+assert(result_9 == expected_9);
+//TEST_END
+
+
+//TEST
+long long num_10 = 0; 
+long long modulus_10 = 1000000007;
+long long left_10 = 0;
+long long right_10 = 1;
+try {
+CountPossibleQueues(num_10, modulus_10, left_10, right_10);
+assert(false); 
+} catch (const std::invalid_argument& e) {
+assert(true); 
+}
+//TEST_END
+
+//TEST
+long long num_11 = 100001; 
+long long modulus_11 = 1000000007;
+long long left_11 = 0;
+long long right_11 = 1;
+try {
+CountPossibleQueues(num_11, modulus_11, left_11, right_11);
+assert(false); 
+} catch (const std::invalid_argument& e) {
+assert(true);
+}
+//TEST_END
+
+//TEST
+long long num_12 = 50;
+long long modulus_12 = -1; 
+long long left_12 = 0;
+long long right_12 = 1;
+try {
+CountPossibleQueues(num_12, modulus_12, left_12, right_12);
+assert(false); 
+} catch (const std::invalid_argument& e) {
+assert(true); 
+}
+//TEST_END
+
+//TEST
+long long num_13 = 50;
+long long modulus_13 = 3000000000; 
+long long left_13 = 0;
+long long right_13 = 1;
+try {
+CountPossibleQueues(num_13, modulus_13, left_13, right_13);
+assert(false); 
+} catch (const std::invalid_argument& e) {
+assert(true); 
+}
+//TEST_END
+
+//TEST
+long long num_14 = 50;
+long long modulus_14 = 1000000007;
+long long left_14 = -1; 
+long long right_14 = 1;
+try {
+CountPossibleQueues(num_14, modulus_14, left_14, right_14);
+assert(false); 
+} catch (const std::invalid_argument& e) {
+assert(true); 
+}
+//TEST_END
+
+//TEST
+long long num_15 = 50;
+long long modulus_15 = 1000000007;
+long long left_15 = 0;
+long long right_15 = 51; 
+try {
+CountPossibleQueues(num_15, modulus_15, left_15, right_15);
+assert(false);
+} catch (const std::invalid_argument& e) {
+assert(true); 
+}
+//TEST_END
+
+//TEST
+long long num_16 = 50;
+long long modulus_16 = 1000000007;
+long long left_16 = 0;
+long long right_16 = -1; 
+try {
+CountPossibleQueues(num_16, modulus_16, left_16, right_16);
+assert(false); 
+} catch (const std::invalid_argument& e) {
+assert(true); 
+}
+//TEST_END
     return 0;
 }
-
-
