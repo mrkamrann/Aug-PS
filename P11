@@ -1,5 +1,26 @@
 /*
 Link: https://codeforces.com/contest/1383/problem/E
+
+
+Jeena the Koala has a binary string `str` of length `len`. Jeena can perform no more than `len-1` (possibly zero) operations of the following form:
+
+In one operation, Jeena selects positions `i` and `i+1` for some `i` with `1≤i<len` and sets `str[i]` to `max(str[i],str[i+1])`. Then Jeena deletes position `i+1` from `str` (after the removal, the remaining parts are concatenated).
+
+Note that after every operation the length of `str` decreases by 1.
+
+How many different binary strings can Jeena obtain by doing no more than `len-1` (possibly zero) operations modulo `10^9 + 7` (1000000007)?
+
+Create a C++ function `CountDistinctBinaryStrings` that will return the number of distinct binary strings that can be obtained. 
+
+Use appropriate error handling using the `std::invalid_argument` library for invalid test cases.
+
+Input Type
+- A string denoting `str`.
+
+Input Constraints
+- The length of `str` should be at least 1 and at most `10^6` inclusive.
+- Each character in `str` should be `0` or `1`.
+
 */
 
 #include <iostream>
@@ -9,7 +30,7 @@ Link: https://codeforces.com/contest/1383/problem/E
 #include <stdexcept>
 #include <cassert>
 
-int ComputeResult(const std::string& str) {
+int CountDistinctBinaryStrings(const std::string& str) {
   
     int len = static_cast<int>(str.length()); 
   
@@ -58,14 +79,91 @@ int ComputeResult(const std::string& str) {
 #include <cassert>
 
 int main() {
-    std::string str;
-    std::cin >> str;
+    //TEST
+    std::string str_1 = "110011";
+    int expected_1 = 12;
+    int result_1 = CountDistinctBinaryStrings(str_1);
+   assert(result_1 == expected_1);
+    //TEST_END
 
+    //TEST
+    std::string str_2 = "11111";
+    int expected_2 = 5;
+    int result_2 = CountDistinctBinaryStrings(str_2);
+  assert(result_2 == expected_2);
+    //TEST_END
+
+    //TEST
+    std::string str_3 = "1000100";
+    int expected_3 = 15;
+    int result_3 = CountDistinctBinaryStrings(str_3);
+  assert(result_3 == expected_3);
+    //TEST_END
+
+    //TEST
+    std::string str_4 = "0101010101";
+    int expected_4 = 62;
+    int result_4 = CountDistinctBinaryStrings(str_4);
+  assert(result_4 == expected_4);
+    //TEST_END
+
+    //TEST
+    std::string str_5 = "0000000000";
+    int expected_5 = 10;
+    int result_5 = CountDistinctBinaryStrings(str_5);
+  assert(result_5 == expected_5);
+    //TEST_END
+
+    //TEST
+    std::string str_6 = "11110000";
+    int expected_6 = 20;
+    int result_6 = CountDistinctBinaryStrings(str_6);
+ assert(result_6 == expected_6);
+    //TEST_END
+
+    //TEST
+    std::string str_7 = "10101010";
+    int expected_7 = 30;
+    int result_7 = CountDistinctBinaryStrings(str_7);
+ assert(result_7 == expected_7);
+    //TEST_END
+
+    //TEST
+    std::string str_8 = "1101101100";
+    int expected_8 = 78;
+    int result_8 = CountDistinctBinaryStrings(str_8);
+  assert(result_8 == expected_8);
+    //TEST_END
+
+    //TEST
+    std::string str_9 = "1010101011";
+    int expected_9 = 47;
+    int result_9 = CountDistinctBinaryStrings(str_9);
+  assert(result_9 == expected_9);
+    //TEST_END
+
+    //TEST
+    std::string str_10 = "10102";
     try {
-        std::cout << ComputeResult(str) << '\n';
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << '\n';
+        CountDistinctBinaryStrings(str_10);
+        assert(false); 
+    } catch(const std::invalid_argument& e) {
+      
+        assert(true); 
     }
+    //TEST_END
+
+    //TEST
+    std::string str_11 = "";
+    try {
+        CountDistinctBinaryStrings(str_11);
+      
+        assert(false);
+    } catch(const std::invalid_argument& e) {
+        
+        assert(true); 
+    }
+    //TEST_END
 
     return 0;
 }
