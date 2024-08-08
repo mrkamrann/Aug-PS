@@ -1,5 +1,30 @@
 /*
 Link: https://codeforces.com/problemset/problem/932/E
+
+
+Kyile has a team of num people. For a particular task, Julie can pick any non-empty subset of people. The cost of having x people for the task is x^{k_value}.
+
+Kyile wants to know the sum of costs over all non-empty subsets of people.
+
+- You are given two integers num (1 ≤ num_people ≤ 10^9) representing the total number of people and k_value (1 ≤ k_value ≤ 5000).
+
+- Return the sum of costs for all non-empty subsets modulo 10^9 + 7.
+
+Create a C++ function CalculateSubsetCosts that will return an long long integer denoting the sum of costs for all non-empty subsets modulo 10^9 + 7.
+
+Use appropriate error handling using the stdexcept library for the invalid test cases.
+
+Input Type
+
+- An integer denoting num
+- An integer denoting k_value
+
+Input Constraints
+
+- The value of num should be at least 1 and at most 10^9 inclusive.
+- The value of k_value should be at least 1 and at most 5000 inclusive.
+
+
 */
 
 
@@ -20,7 +45,7 @@ long long ModuloExponentiation(long long base, int exponent, int mod) {
     return result;
 }
 
-long long CalculateAns(int num, int k_value) {
+long long CalculateSubsetCosts(int num, int k_value) {
   
     if (num < 1 || num > 1000000000) {
         throw std::invalid_argument("Invalid input values for num");
@@ -56,13 +81,153 @@ long long CalculateAns(int num, int k_value) {
 
 
 int main() {
-    int num, k_value;
-    if (scanf("%d%d", &num, &k_value) != 2) {
-        throw std::invalid_argument("Invalid input format");
-    }
+    //TEST
+int num_1 = 3;
+int k_value_1 = 2;
+long long expected_1 = 24; 
+long long result_1 = CalculateSubsetCosts(num_1, k_value_1);
+assert(result_1 == expected_1);
+//TEST_END
+
+//TEST
+int num_2 = 4;
+int k_value_2 = 3;
+long long expected_2 = 224; 
+long long result_2 = CalculateSubsetCosts(num_2, k_value_2);
+assert(result_2 == expected_2);
+//TEST_END
+
+//TEST
+int num_3 = 5;
+int k_value_3 = 1;
+long long expected_3 = 80; 
+long long result_3 = CalculateSubsetCosts(num_3, k_value_3);
+assert(result_3 == expected_3);
+//TEST_END
+
+//TEST
+int num_4 = 6;
+int k_value_4 = 2;
+long long expected_4 = 672; 
+long long result_4 = CalculateSubsetCosts(num_4, k_value_4);
+assert(result_4 == expected_4);
+//TEST_END
+
+//TEST
+int num_5 = 7;
+int k_value_5 = 3;
+long long expected_5 = 7840; 
+long long result_5 = CalculateSubsetCosts(num_5, k_value_5);
+assert(result_5 == expected_5);
+//TEST_END
+
+//TEST
+int num_6 = 8;
+int k_value_6 = 1;
+long long expected_6 = 1024; 
+long long result_6 = CalculateSubsetCosts(num_6, k_value_6);
+assert(result_6 == expected_6);
+//TEST_END
+
+//TEST
+int num_7 = 9;
+int k_value_7 = 2;
+long long expected_7 = 11520;
+long long result_7 = CalculateSubsetCosts(num_7, k_value_7);
+assert(result_7 == expected_7);
+//TEST_END
+
+//TEST
+int num_8 = 10;
+int k_value_8 = 3;
+long long expected_8 = 166400;
+long long result_8 = CalculateSubsetCosts(num_8, k_value_8);
+assert(result_8 == expected_8);
+//TEST_END
+
+//TEST
+int num_9 = 11;
+int k_value_9 = 2;
+long long expected_9 = 67584; 
+long long result_9 = CalculateSubsetCosts(num_9, k_value_9);
+assert(result_9 == expected_9);
+//TEST_END
+//TEST
+int num_10 = -1;
+int k_value_10 = 2;
+try {
+    long long result_10 = CalculateSubsetCosts(num_10, k_value_10);
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+int num_11 = 3;
+int k_value_11 = -2;
+try {
+    long long result_11 = CalculateSubsetCosts(num_11, k_value_11);
+  
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+  
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_12 = 0;
+int k_value_12 = 3;
+try {
+    long long result_12 = CalculateSubsetCosts(num_12, k_value_12);
+   
+    assert(false);
+} catch (const std::invalid_argument& e) {
+   
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+int num_13 = 3;
+int k_value_13 = 0;
+try {
+    long long result_13 = CalculateSubsetCosts(num_13, k_value_13);
+   
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+  
+    assert(true);
+}
+//TEST_END
+
+//TEST
+int num_14 = 1000000001;
+int k_value_14 = 2;
+try {
+    long long result_14 = CalculateSubsetCosts(num_14, k_value_14);
+   
+    assert(false); 
+} catch (const std::invalid_argument& e) {
+  
+    assert(true); 
+}
+//TEST_END
+
+//TEST
+int num_15 = 3;
+int k_value_15 = 5001;
+try {
+    long long result_15 = CalculateSubsetCosts(num_15, k_value_15);
     
-    long long result = CalculateAns(num, k_value);
-    printf("%lld", result);
+    assert(false);
+} catch (const std::invalid_argument& e) {
+   
+    assert(true); 
+}
+//TEST_END
+
     
-    return 0;
+return 0;
 }
